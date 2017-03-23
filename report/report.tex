@@ -1,0 +1,66 @@
+\documentclass[11pt,english,a4paper]{article}
+\usepackage{babel}
+\input{/home/marius/Dokumenter/preamples/phys_en.pre}
+\author{\normalsize Marius Jonsson (Institutt for Vanskelig Fysikk, Oscars gate 19, 0352 OSLO, Norway) \\\\
+\vspace{5px}
+\normalsize \texttt{http://github.com/kingoslo/flintstones}}
+\title{\bf \uppercase{Some title}}
+\date{\normalsize \today}
+\addbibresource{/home/marius/Dokumenter/MyLibrary.bib}
+\DeclareUnicodeCharacter{2212}{$-$}
+\begin{document}
+\maketitle
+\begin{abstract} \normalsize This is a report submission for the first project of «Computational physics 2» at the Institute of Physics, University of Oslo, autumn 2016.
+\end{abstract}
+\lstset{
+  xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
+}
+
+\section*{\uppercase{Introduction}}
+A.\\
+\\
+The report is structured by «introduction»-, «methods»-, «results and discussion»- and finally a «conclusion and perspectives»-sections.
+\section*{\uppercase{Methods}}
+$\varrho \varsigma \vartheta \varpi$
+\section*{\uppercase{Results and discussion}}
+
+\section*{\uppercase{Conclusion and perspectives}}
+
+\section*{\uppercase{Appendix}}
+\begin{theorem}[Hastings-Metropolis theorem]
+Suppose that $C\pi_i$ is a discrete probability distribution. If $q_{ij}$ is any irreducible transition probability matrix, and $X_n$ is a Markov chain with transition probability matrix 
+\begin{equation}
+P_{ij} = \ccases {
+\alpha_{  ij} q_{  ij} , \quad &j\neq i\\
+q_{  ii} + \sum_{k=0}^\infty q_{  ik}(1 - \alpha_{  ik})\quad & j=i
+},\qquad \text{where} \qquad \alpha_{  ij} = \min \left( \frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} , 1\right), \label{eq:metropolis}
+\end{equation}
+\end{theorem}
+then $X_n$ is time reversible with stationary distribution $\pi_i$.
+\begin{proof}
+Assume that the hypothesis is true. Then in particular $q_{  ij} \neq 0$ for all $i,j$ since $q$ is irreducible. Notice that if 
+\[
+\frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} = 1,
+\]
+then there is nothing to prove since then $\alpha_{ij} = 1$ and $\alpha_{ji} = 1$, and therefore
+\begin{equation}
+\pi_iP_{  ij} = \pi_jP_{  ji} \label{eq:detailed_balance}
+\end{equation} 
+is automatic. Hence it suffices to prove \eqref{eq:detailed_balance} for the two cases
+\[
+\frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} > 1 \qquad \text{and} \qquad \frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} < 1,
+\]
+separately. Suppose first that $\pi_j q_{  ji} > \pi_i q_{  ij}$ $(\dagger)$. Write:
+\[
+\pi_iP_{  ij} \stackrel{\eqref{eq:metropolis}}{=} \pi_i  q_{  ij} \alpha_{  ij} \stackrel{\eqref{eq:metropolis}(\dagger)}{=} \pi_i q_{  ij} \cdot 1 =
+\pi_i q_{  ij}  \frac{\alpha_{  ji}}{\alpha_{  ji}} = \alpha_{  ji}\pi_i q_{  ij}  \frac{1}{\alpha_{  ji}} \stackrel{(\dagger)}{=} \alpha_{  ji}\pi_i q_{  ij}  \frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} = \alpha_{  ji}  \pi_j q_{  ji} \stackrel{\eqref{eq:metropolis}}{=} \pi_jP_{  ji}. 
+\]
+In the case that $\pi_j q_{  ji} < \pi_i q_{  ij}$ $(\ddagger)$, write
+\[
+\pi_iP_{  ij} \stackrel{\eqref{eq:metropolis}}{=} \pi_i  q_{  ij} \alpha_{  ij} \stackrel{\eqref{eq:metropolis}(\ddagger)}{=} \pi_i q_{  ij} \frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} = \pi_j q_{  ji} = \pi_j q_{  ji} \cdot 1 \stackrel{\eqref{eq:metropolis}(\ddagger)}{=} \pi_j q_{  ji} \cdot \alpha_{  ji} = \pi_jP_{  ji},
+\]
+which means $X_n$ is time reversible with stationary probability $\pi_i$.
+\end{proof}
+
+\printbibliography
+\end{document}
