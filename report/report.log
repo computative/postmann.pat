@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.6)  21 MAR 2017 23:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.6)  8 APR 2017 02:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1763,7 +1763,21 @@ mpat=1.1.0]{tikz-feynman} so that you can be warned if TikZ-Feynman changes. on
 (/usr/local/texlive/2015/texmf-dist/tex/latex/newtx/t1ntxtt.fd
 File: t1ntxtt.fd 2012/04/20 v3.1
 )
-Underfull \hbox (badness 10000) in paragraph at lines 20--23
+Overfull \hbox (24.47473pt too wide) detected at line 22
+\LMP1/mtt/m/it/10.95  [].[][]; [][]/ \LMP2/mtt/m/n/10.95 D \LMP1/mtt/m/it/10.95
+ C. [] []/.[][]; [][]/;   [].[][]; [][]/ \LMP2/mtt/m/n/10.95 D [] [] \LMP1/mtt/
+m/it/10.95 ;   [].[][]; [][]/ \LMP2/mtt/m/n/10.95 D [] []
+ []
+
+(/home/marius/texmf/tex/latex/mtpro2/umt2hrb.fd
+File: umt2hrb.fd 2009/1/30 v2.2 MathTimePro II Holey Roman Bold (PCTeX/WaS)
+)
+Underfull \hbox (badness 10000) in paragraph at lines 37--42
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 37--42
 
  []
 
@@ -1771,42 +1785,44 @@ Underfull \hbox (badness 10000) in paragraph at lines 20--23
 
 ]
 
-LaTeX Warning: Empty bibliography on input line 65.
+LaTeX Warning: Empty bibliography on input line 77.
 
 [2]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 66.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 66.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 78.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 78.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 66.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 66.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 78.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 78.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 Package logreq Info: Writing requests to 'report.run.xml'.
 \openout1 = `report.run.xml'.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 66.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 78.
  ) 
 Here is how much of TeX's memory you used:
- 38715 strings out of 493033
- 853513 string characters out of 6134146
- 1301579 words of memory out of 5000000
- 41598 multiletter control sequences out of 15000+600000
- 154268 words of font info for 79 fonts, out of 8000000 for 9000
+ 38741 strings out of 493033
+ 853992 string characters out of 6134146
+ 1302511 words of memory out of 5000000
+ 41614 multiletter control sequences out of 15000+600000
+ 159568 words of font info for 86 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  57i,22n,92p,1022b,1462s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</ho
 me/marius/texmf/fonts/type1/pctex/mtpro2/mt2exa.pfb></home/marius/texmf/fonts/t
-ype1/pctex/mtpro2/mt2mis.pfb></home/marius/texmf/fonts/type1/pctex/mtpro2/mt2mi
-t.pfb></home/marius/texmf/fonts/type1/pctex/mtpro2/mt2syat.pfb></home/marius/te
-xmf/fonts/type1/pctex/mtpro2/mt2sys.pfb></home/marius/texmf/fonts/type1/pctex/m
-tpro2/mt2syt.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/tex-gyr
-e/qtmb.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmr
-.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb>
-</usr/local/texlive/2015/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb>
-Output written on report.pdf (2 pages, 129064 bytes).
+ype1/pctex/mtpro2/mt2hbit.pfb></home/marius/texmf/fonts/type1/pctex/mtpro2/mt2m
+is.pfb></home/marius/texmf/fonts/type1/pctex/mtpro2/mt2mit.pfb></home/marius/te
+xmf/fonts/type1/pctex/mtpro2/mt2syat.pfb></home/marius/texmf/fonts/type1/pctex/
+mtpro2/mt2sys.pfb></home/marius/texmf/fonts/type1/pctex/mtpro2/mt2syt.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb></usr/local
+/texlive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmbi.pfb></usr/local/texl
+ive/2015/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb></usr/local/texlive/20
+15/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb></usr/local/texlive/2015/te
+xmf-dist/fonts/type1/public/txfonts/t1xtt.pfb>
+Output written on report.pdf (2 pages, 161848 bytes).
 PDF statistics:
- 89 PDF objects out of 1000 (max. 8388607)
- 56 compressed objects within 1 object stream
+ 97 PDF objects out of 1000 (max. 8388607)
+ 62 compressed objects within 1 object stream
  6 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

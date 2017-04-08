@@ -1,9 +1,9 @@
 \documentclass[11pt,english,a4paper]{article}
 \usepackage{babel}
 \input{/home/marius/Dokumenter/preamples/phys_en.pre}
-\author{\normalsize Marius Jonsson (Institutt for Vanskelig Fysikk, Oscars gate 19, 0352 OSLO, Norway) \\\\
+\author{\normalsize Marius Jonsson \\\\
 \vspace{5px}
-\normalsize \texttt{http://github.com/kingoslo/flintstones}}
+\normalsize \texttt{http://github.com/kingoslo/postmann.pat}}
 \title{\bf \uppercase{Some title}}
 \date{\normalsize \today}
 \addbibresource{/home/marius/Dokumenter/MyLibrary.bib}
@@ -17,16 +17,28 @@
 }
 
 \section*{\uppercase{Introduction}}
-A.\\
-\\
+\[
+\psi_T(\vec{r}_1, \vec{r}_2) = C(\psi_0 \psi_C)(\vec{r}_1, \vec{r}_2), \quad  \psi_0(\vec{r}_1, \vec{r}_2) = \exp \left(-\frac{1}{2} \alpha  \omega  \left( {{r}_1}^2+  {{r}_2}^2\right)\right),  \quad  \psi_C(\vec{r}_1, \vec{r}_2) =  \exp \left( \frac{\gamma r_{  12}}{\beta  r_{  12}+1} \right)
+\]
+\[
+E_T = \sum_{i=1}^N \left[ -\frac{1}{2} \frac{\nabla^2_i \psi_T}{\psi_T} + \frac{1}{2} \omega^2 r_i^2 + \sum_{j=i+1}^N \frac{1}{r_{ij}} \right], \qquad \frac{\nabla_i^2 \psi_T}{\psi_T} = \frac{\nabla_i^2 \psi_0}{\psi_0} + \frac{\nabla_i^2 \psi_C}{\psi_C} + 2\frac{\nabla_i \psi_C}{\psi_C}\frac{\nabla_i \psi_0}{\psi_0}
+\]
+\[
+\frac{\nabla_i^2 \psi_0}{\psi_0} = \alpha^2 \omega^2 r_i^2 - 2 \alpha \omega, \qquad
+\frac{\nabla_i^2 \psi_C}{\psi_C} = \frac{\gamma (1 + r_{ij} \gamma - \beta^2 r_{  12}^2)}{r_{  12}(1 + \beta r_{  12})^4}, \qquad \sum_{i=1}^2 \frac{\nabla_i \psi_C}{\psi_C}\cdot \frac{\nabla_i \psi_0}{\psi_0} = - \frac{\alpha \omega \gamma r_{ij}}{(1 + \beta r_{12})^2}
+\]
 The report is structured by «introduction»-, «methods»-, «results and discussion»- and finally a «conclusion and perspectives»-sections.
 \section*{\uppercase{Methods}}
 $\varrho \varsigma \vartheta \varpi$
 \section*{\uppercase{Results and discussion}}
-
 \section*{\uppercase{Conclusion and perspectives}}
 
 \section*{\uppercase{Appendix}}
+In this section we will prove the Hastings-Metropolis theorem. Often whilst proving results about Markov chains we are interested in whether the Markov chain can reach every state from any other state. In the following proof this is important because it ensures that all the divisions we will make are non-zero. Let's make this notion precise. Suppose $q_{  ij}$ is the transition probability matrix of a Markov chain $X_n$ and $S$ is the state space. We say that $X_n$ is \textit{\textbf{irreducible}} if for all $i,j \in S$ there exist an $n \in \mathbb{N}$ such that $(q^n)_{  ij}, (q^n)_{  ji} > 0$.\\
+\\
+Suppose that $X_n$ is irreducible and not deterministically periodic, then we say that the probabilities $\pi_i = P(X_n = i)$ is the \textit{\textbf{stationary distribution}} of $X_n$.\\
+\\
+We will say that $X_n$ is \textit{\textbf{time reversible}} if the conditional probability $P(X_{n} = j$, given that $X_{n+1} = i) = P_{  ij}$ for all $i,j \in S$ and $n \in \mathbb{N}$. Interestingly, it is easily shown that a Markov chain is time reversible if and only if $\pi_i P_{  ij} = \pi_j P_{  ji}$ for all $i,j \in S$. If you wish to prove this yourself, the proposition follows from Markov chain property and Bayes theorem. With these definitions, we are ready for the main result.
 \begin{theorem}[Hastings-Metropolis theorem]
 Suppose that $C\pi_i$ is a discrete probability distribution. If $q_{ij}$ is any irreducible transition probability matrix, and $X_n$ is a Markov chain with transition probability matrix 
 \begin{equation}
