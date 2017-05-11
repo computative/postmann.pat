@@ -10,7 +10,12 @@
 \DeclareUnicodeCharacter{2212}{$-$}
 \begin{document}
 \maketitle
-\begin{abstract} \normalsize This is a report submission for the first project of «Computational physics 2» at the Institute of Physics, University of Oslo, autumn 2016.
+\begin{abstract} \normalsize This is a report submission for the first project of «Computational physics 2» at the Institute of Physics, University of Oslo, autumn 2016.\\
+\\
+We prove a stronger version of the blocking method than Flydbjerg and Pettersen claim. We prove that if $X_1,X_2,\cdots, X_m$ are $2^n$ identically distributed random variables with stationary non-negative covariances, $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denote their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then there exist a $k \in \mathbb{N}$ such that $k < \log_2 m$ and
+\[
+\Var{\overline X_m} - \Var{X^{(k)}_i} < \frac{8}{m}\Var{X^{(k)}_i} \qquad \text{for all} \qquad 1 \leq i \leq 2^{-k}m.
+\]
 \end{abstract}
 \lstset{
   xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
@@ -27,19 +32,193 @@ E_T = \sum_{i=1}^N \left[ -\frac{1}{2} \frac{\nabla^2_i \psi_T}{\psi_T} + \frac{
 \frac{\nabla_i^2 \psi_0}{\psi_0} = \alpha^2 \omega^2 r_i^2 - 2 \alpha \omega, \qquad
 \frac{\nabla_i^2 \psi_C}{\psi_C} = \frac{\gamma (1 + r_{ij} \gamma - \beta^2 r_{  12}^2)}{r_{  12}(1 + \beta r_{  12})^4}, \qquad \sum_{i=1}^2 \frac{\nabla_i \psi_C}{\psi_C}\cdot \frac{\nabla_i \psi_0}{\psi_0} = - \frac{\alpha \omega \gamma r_{ij}}{(1 + \beta r_{12})^2}
 \]
+\[
+\frac{\nabla_i \psi_T}{\psi_T} = \vec{e}_1 \left( -\alpha \omega x_i + \frac{\gamma(x_i - x_j)}{(1 + \beta r_{ij})^2r_{ij}} \right) + \vec{e}_2 \left( - \alpha \omega y_i + \frac{\gamma(y_i-y_j)}{(1 + \beta r_{ij})^2r_{ij}} \right)
+\]
+\[
+\frac{\partial}{\partial \theta_j} E(\theta_1,\theta_2,\cdots \theta_n) = 2 \E{\frac{E}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} } - 2\E{\frac{1}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} }\E{E}
+\]
+\[
+\frac{1}{\psi_T}\pp \psi_T; \alpha; = - \frac{\omega}{2} \left( r_1^2 + r_2^2 \right) \qquad 
+\frac{1}{\psi_T}\pp \psi_T; \beta; = - \gamma \left( \frac{r_{12}}{1 + \beta r_{12}} \right)^2
+\]
 The report is structured by «introduction»-, «methods»-, «results and discussion»- and finally a «conclusion and perspectives»-sections.
 \section*{\uppercase{Methods}}
 $\varrho \varsigma \vartheta \varpi$
 \section*{\uppercase{Results and discussion}}
-\section*{\uppercase{Conclusion and perspectives}}
 
+Next we want to prove the blocking method. The paper by Flyvbjerg and Petersen (ref) gives an excellent introduction for applications. Mathematically interested readers may be affronted by the paper because the paper does not contain proof of the method. The paper falsely claims that the blocking transformations has a fixed point and that conditions can be put on $\gamma_t$ such that repeated blockings ensure the $gamma_t$s wind up at $C\delta_{t0}$. This is false because the blocking transformations are not a linear operator (ref), and therefore $T$ cannot have a fixed point (ref) moreover. Since there is no fixed point, there is no basin of attraction (ref). We will however prove the blocking method, and study its properties, such as convergence rate and compute the error induced by the algorithm and present sufficient conditions such that the method is stable and converges. To my knowledge, this has never been done for the blocking method. As you will see, the method is suitable for estimation of the variance of random variables.
+\\
+\\
+Definer $\gamma_t$ før dette.
+\begin{prop}
+Suppose $X_1,\cdots, X_m$ are $m = 2^l$ identically distributed random variables with stationary non-negative covariances. Let $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denote their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then
+\begin{equation}
+\varepsilon_k = \Var{\overline X_m} - \Var{X^{(k)}_i} = \frac{2}{n^{(k)}} \sum_{t=1}^{n^{(k)}-1} \left( 1 - \frac{t}{n^{(k)}} \right) (\gamma_k)_t \label{eq:epsilon}
+\end{equation}
+and
+\begin{equation}
+\gamma_{k,j} = \ccases{ \frac{1}{2}\gamma_{k-1,2j} + \frac{1}{2}\gamma_{k-1,2j+1} & \qquad \text{if $j = 0$} \\
+\frac{1}{4}\gamma_{k-1,2j-1} + \frac{1}{2}\gamma_{k-1,2j} + \frac{1}{4}\gamma_{k-1,2j+1} & \qquad \text{if $j > 0$}
+} \label{eq:T}
+\end{equation}
+\end{prop}
+\begin{proof}
+See Flydbjerg and Petersen. A proof is also containted in the appendix.
+\end{proof}
+
+\begin{lemma} Suppose $m = 2^l$ denotes the number of observations and $k$ denote the number of blocking transformations. Then
+\[
+k < \log_2m, \qquad n^{(k)} = 2^{-k}m.
+\]\label{lemma:k}
+\end{lemma}
+\begin{proof}
+$n^{(k)} = 2^{-k}m$ and $n^{(k+1)} = 2^{-(k+1)}m$, and so
+\[
+\frac{n^{(k)}}{n^{(k+1)}} = \frac{2^{-k}m}{2^{-(k+1)}m} = \frac{1}{2} \qquad \text{only if} \qquad 
+\]  
+\end{proof}
+\begin{lemma} Suppose $\gamma_t$ denote the correlation between two observations $X_i$ and $X_j$ such that $|i-j| = t$. Suppose also that $\gamma_t \geq 0$ for all $t$. Then 
+\[
+\gamma_t \leq \gamma_0 \qquad \text{for all} \qquad t \geq 0.
+\]
+\end{lemma}
+\begin{proof}
+We will need the formula $| \cov (X,Y) |^2 \leq \cov (X,X) \cov (Y,Y)$ $(*)$ which is proven in the appendix. Write
+\[
+\gamma_{t}^2 = |\gamma_t|^2 = |\gamma_{ij}|^2 = | \cov (X_i,X_j) |^2 \stackrel{(*)}{\leq} \cov (X_i,X_i) \cov (X_j,X_j) = \gamma_{ii}\gamma_{jj} = \gamma_0^2
+\]
+Since the function $f(\gamma) = \gamma^2$ is strictly increasing on $[0,\infty)$, we know $\gamma_t \geq \gamma_0$ follows.
+\end{proof}
+\begin{prop}
+Suppose $\varepsilon_k$ denotes the error after $k$ blocking iterations. Let $\{\varepsilon_k\}_{  k=1}^d$ denote the sequence of errors. Then this sequence is monotonously decreasing and the rate at which it decreases is
+\begin{equation}
+\varepsilon_k - \varepsilon_{  k+1} = \frac{(\gamma_k)_1 }{n^{(k)}} \label{eq:rate}
+\end{equation}
+\begin{proof}
+Vis at den er decreasing.\\
+\\
+It remains to prove formula \eqref{eq:rate}. We will manipulate sums and will be interested in which function $f(t)$ appear in the terms $\gamma^{(k)}_{f(t)}$ inside the summation. For simplicity, lets agree to write: 
+\[S_{f(j)} \equiv \frac{1}{n^{(k)}} \sum_{t=1}^{n^{(k)}/2-1} \left( 1 - \frac{2t}{n^{(k)}} \right) \gamma^{(k)}_{f(t)}. \]
+That means, using $n^{(k+1)} = n^{(k)}/2$ , we can rewrite $\varepsilon_{  k+1}$ as
+\begin{align}
+\varepsilon_{  k+1} &\stackrel{\eqref{eq:epsilon}}{=} \frac{2}{n^{(k+1)}} \sum_{t=1}^{n^{(k+1)}-1} \left( 1 - \frac{t}{n^{(k+1)}} \right) (\gamma_{k+1})_t \stackrel{\eqref{eq:T}}{=} \frac{1}{n^{(k)}} \sum_{t=1}^{n^{(k)}/2-1} \left( 1 - \frac{2t}{n^{(k)}} \right) \left( \gamma^{(k)}_{2t - 1} + 2\gamma^{(k)}_{2t} + \gamma^{(k)}_{2t + 1}\right) \nonumber \\
+&= S_{2j-1} + 2S_{2j} + S_{2j+1} = 2(S_{2j-1} + S_{2j}) + S_{2j+1} - S_{2j-1} \label{eq:epsilonkpp}
+\end{align}
+where we added and subtracted $S_{2j - 1}$ in the last step. Let's examine the terms in the sum individually, write:
+\begin{align}
+S_{2j-1} &= \frac{1}{n^{(k)}} \sum_{t=1}^{n^{(k)}/2-1} \left( 1 - \frac{2t}{n^{(k)}} \right) \gamma^{(k)}_{2t - 1}  = \frac{1}{n^{(k)}}\sum_{t=1}^{n^{(k)}/2-1} \left( 1 - \frac{2t-1}{n^{(k)}}\right) \gamma^{(k)}_{2t - 1} - \frac{1}{n^{(k)}} \sum_{t=1}^{n^{(k)}/2-1} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} \label{eq:sumB}
+\\
+S_{2j+1} &= \frac{1}{n^{(k)}} \sum_{t=1}^{n^{(k)}/2-1} \left( 1 - \frac{2t}{n^{(k)}} \right) \gamma^{(k)}_{2t + 1}  = \frac{1}{n^{(k)}} \left[ \frac{2}{n^{(k)}} \gamma^{(k)}_{3} + \frac{4}{n^{(k)}} \gamma^{(k)}_{5} + \cdots + \frac{n^{(k)} - 2}{n^{(k)}} \gamma^{(k)}_{n^{k} - 1}\right]\nonumber
+ \\
+ &= \frac{1}{n^{(k)}}\sum_{t=2}^{n^{k}/2} \left( 1 - \frac{2(t-1)}{n^{(k)}} \right) \gamma^{(k)}_{2t-1} = \frac{1}{n^{(k)}} \sum_{t=2}^{n^{(k)}/2} \left( 1 - \frac{2t-1}{n^{(k)}} \right) \gamma^{(k)}_{2t - 1} + \frac{1}{n^{(k)}}\sum_{t=2}^{n^{(k)}/2} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1}  \nonumber
+\end{align}
+Notice that if we subtract these terms, then a almost all terms from one of the sums cancel and we obtain
+\begin{equation}
+S_{2j+1} - S_{2j-1} = \frac{2}{n^{(k)}} \sum_{t=2}^{n^{(k)}/2} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} - \frac{1}{n^{(k)}}\left( 1 - \frac{1}{n^{(k)}} \right) \gamma^{(k)}_{1} \label{eq:differencesum}
+\end{equation}
+Lets also investigate
+\begin{align}
+n^{(k)}(S_{2j-1} + S_{2j}) \stackrel{\eqref{eq:sumB} }{=} \sum_{t=1}^{n^{(k)}/2-1} \left( 1 - \frac{2t-1}{n^{(k)}}\right) \gamma^{(k)}_{2t - 1} -  \sum_{t=1}^{n^{(k)}/2-1} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} + \sum_{t=1}^{n^{(k)}/2-1} \left( 1 - \frac{2t}{n^{(k)}}\right) \gamma^{(k)}_{2t}\nonumber\\
+=\left[ \left(1 + \frac{1}{n^{(k)}}\right)\gamma^{(k)}_1 + \left(1 + \frac{2}{n^{(k)}}\right)\gamma^{(k)}_2  + \cdots + \left(1 + \frac{n^{(k)} - 2}{n^{(k)}} \right)\gamma^{(k)}_{n^{(k)} -2 }\right]-  \sum_{t=1}^{n^{(k)}/2-1} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} \nonumber\\
+= \sum_{t=1}^{n^{(k)} -2 } \left( 1 - \frac{t}{n^{(k)}} \right)\gamma^{(k)}_{t}-  \sum_{t=1}^{n^{(k)}/2-1} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} = \sum_{t=1}^{n^{(k)} -1 } \left( 1 - \frac{t}{n^{(k)}} \right)\gamma^{(k)}_{t} -  \sum_{t=1}^{n^{(k)}/2} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} \label{eq:nsum}
+\end{align}
+In the last equality we added and subtracted $(1-t/n^{(k)})\gamma^{(k)}_{t}$ and in addition used that for $t = n^{(k)} - 1$, $(1-t/n^{(k)})\gamma^{(k)}_{t} = 1/n^{(k)}\gamma^{(k)}_{n^{(k)} -1}$. This means that if we consider
+\begin{align}
+2(S_{2j-1} + S_{2j}) \stackrel{\eqref{eq:nsum}}{=} \frac{2}{n^{(k)}} \left[ \sum_{t=1}^{n^{(k)} -1 } \left( 1 - \frac{t}{n^{(k)}} \right)\gamma^{(k)}_{t} -  \sum_{t=1}^{n^{(k)}/2} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} \right] = \varepsilon_k -\frac{2}{n^{(k)}} \sum_{t=1}^{n^{(k)}/2} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} \label{eq:sumsum}
+\end{align}
+Now substitute \eqref{eq:differencesum} and \eqref{eq:sumsum} into \eqref{eq:epsilonkpp}
+\begin{align*}
+\varepsilon_{  k+1} &\stackrel{\eqref{eq:epsilonkpp}}{=} 2(S_{2j-1} + S_{2j}) + S_{2j+1} - S_{2j-1} \\
+&\stackrel{\eqref{eq:sumsum}}{=} \varepsilon_k -\frac{2}{n^{(k)}} \sum_{t=1}^{n^{(k)}/2} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1}  + \frac{2}{n^{(k)}} \sum_{t=2}^{n^{(k)}/2} \frac{1}{n^{(k)}} \gamma^{(k)}_{2t - 1} - \frac{1}{n^{(k)}}\left( 1 - \frac{1}{n^{(k)}} \right) \gamma^{(k)}_{1}\\
+&= \varepsilon_k - \frac{1}{n^{(k)}}\frac{\gamma^{(k}}{n^{(k)}}  - \frac{\gamma^{(k)}_1 }{n^{(k)}} + \frac{1}{n^{(k)}}\frac{\gamma^{(k}}{n^{(k)}} = \varepsilon_k - \frac{\gamma^{(k)}_1 }{n^{(k)}}
+\end{align*}
+Subtract $\varepsilon_{  k+1} - \gamma^{(k)}_1/n^{(k)}$ from each side of the equation, and the proposition follows.
+\end{proof}
+\end{prop}
+
+\begin{lemma}
+Suppose $j$ and $k$ are positive natural number and the sample size $m \geq 2^k(j-1) + 2^{k+1} - 1$, then $k < \log_2 m$ and
+\begin{align}
+\gamma_{  k,j} &= 2^{-2k} \Big[ \gamma_{0,2^k(j-1)+1} + 2\gamma_{0,2^k(j-1)+2} +3\gamma_{0,2^k(j-1)+3} + \cdots + 2^k\gamma_{0,2^k(j-1)+2^k} \nonumber \\
+&+ (2^k -1) \gamma_{0,2^k(j-1)+2^k + 1} + (2^k -2) \gamma_{0,2^k(j-1)+2^k + 2} + \cdots + \gamma_{0,2^k(j-1)+2^{k+1} - 1} \Big] . \label{eq:hypothesis}
+\end{align}
+\end{lemma}
+\begin{proof}
+We first show that $k < \log_2 m$. Fix $j$ and $k$ such that $m \geq 2^k(j-1) + 2^{k+1} - 1$, then
+\[
+m \geq \undercbrace{2^k(j-1)}_{\geq 0} + \undercbrace{2^{k+1} - 1}_{\geq 2^k +1} \geq 2^k + 1 \qquad \text{only if} \qquad \log_2m \geq \log_2(2^k + 1) > \log_2 2^k = k \log_2 2 = k
+\]
+We prove the rest of the lemma by induction. Fix $j$ such that $m \geq 2^1(j-1) + 2^{1+1} - 1$, in particular this ensures that if $k = 1$, then $m \geq 2j + 1$ and therefore $\gamma_{  0,2j+1}$ exists. Define $M = \sup_{k \in \mathbb{N}} \{m \geq 2^k(j-1) + 2^{k+1} - 1\}$. Assume $k=1$ and write
+\[
+\gamma_{  1,j} \stackrel{\eqref{eq:T}}{=} 2^{-2} \left( \gamma_{  0,2j-1} + \gamma_{  0,2j} + \gamma_{  0,2j+1} \right)
+\]
+Assume now that there exist a positive natural number $k < M$ such that equation \eqref{eq:hypothesis} is true. This implies $k+1 \leq M$ and hence $\gamma_{0,2^k2j+2^k+2^k-1}$ exists, and we can write
+\begin{align*} 
+\gamma_{  k+1,j} \stackrel{\eqref{eq:T}}{=} &2^{-2} (\gamma_{  k,2j-1} + 2\gamma_{  k,2j} + \gamma_{  k,2j+1}) \stackrel{\eqref{eq:hypothesis}}{=} \\
+&2^{-2} 2^{-2k}\Big( \gamma_{0,2^k(2j-2)+1} + 2\gamma_{0,2^k(2j-2)+2} + \cdots + 2^k\gamma_{0,2^k(2j-2)+2^k} \\
+&+ (2^k-1)\gamma_{0,2^k(2j-2)+2^k+1} + \cdots + \gamma_{0,2^k(2j-2)+2^k+2^k-1}
+\Big) + \\
+&2^{-2} 2^{-2k}\Big( 2\gamma_{0,2^k(2j-1)+1} + 4\gamma_{0,2^k(2j-1)+2} + \cdots + 2\,2^k\gamma_{0,2^k(2j-1)+2^k} \\
+&+ 2(2^k-1)\gamma_{0,2^k(2j-1)+2^k+1} + \cdots + 2\gamma_{0,2^k(2j-1)+2^k+2^k-1}
+\Big) + \\
+&2^{-2} 2^{-2k}\Big( \gamma_{0,2^k2j+1} + 2\gamma_{0,2^k2j+2} + \cdots + 2^k\gamma_{0,2^k2j +2^k} \\
+&+ (2^k-1)\gamma_{0,2^k2j+2^k+1} + \cdots + \gamma_{0,2^k2j+2^k+2^k-1}
+\Big).
+\end{align*}
+By using that $2^{-2} 2^{-2k} = 2^{-2(k+1)}$ and factoring $\gamma_{0,K}$ together for all $2^{k+1}(j-1) + 1 \leq K \leq 2^{k+1}(j-1) + 2^{k+2}-1$, the lemma follows.
+\end{proof}
+
+\begin{prop}
+Suppose $\vec{\upgamma}_k = \big((\gamma_k)_0 , (\gamma_k)_1, \cdots, (\gamma_k)_{n_k}\big)$ denote the vector of correlation structure at blocking iteration number $k$. Suppose $m \geq 2^{k+1} - 1$, then $k < \log_2 m$ and,
+\[
+2^{  2k}(\gamma_k)_1 = (\gamma_0)_1 + 2(\gamma_0)_2 + 3 (\gamma_0)_3 + \cdots +2^k(\gamma_0)_{2^k} + (2^k-1)(\gamma_0)_{2^k+1} + \cdots + (\gamma_0)_{2^{k+1}-1}
+\]
+\end{prop}
+\begin{proof}
+Use the previous lemma with $j=1$.
+\end{proof}
+Add def av stationary non negative decreasing covariance.
+\begin{theorem}[Blocking method]
+Suppose $X_1,\cdots, X_m$ are $m = 2^l$ identically distributed random variables with stationary non-negative covariances. Let $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denotes their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then there exist a $k \in \mathbb{N}$ such that 
+\[
+k < \log_2 m \qquad \text{and} \qquad \Var{\overline X_m} - \Var{X^{(k)}_i} < \frac{8}{m}\Var{X^{(k)}_i} \qquad \text{for all} \qquad 1 \leq i \leq 2^{-k}m.
+\]
+\end{theorem}
+\begin{proof}
+Bruk masse ulikheter
+\end{proof}
+
+\begin{corollary}
+Suppose $X_1,\cdots, X_m$ are $m = 2^l$ are observations from a stationary time series. Let $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denote their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then there exist a $k \in \mathbb{N}$ such that 
+\[
+k < \log_2 m \qquad \text{and} \qquad \Var{\overline X_m} - \Var{X^{(k)}_i} < \frac{8}{m}\Var{X^{(k)}_i} \qquad \text{for all} \qquad 1 \leq i \leq 2^{-k}m.
+\]
+\end{corollary}
+\begin{proof}
+To do vis at positiviteten til gammaene er implisitt
+\end{proof}
+\begin{corollary}
+Suppose $X_1,\cdots, X_m$ are $m = 2^l$ are observations from a stationary Markov chain. Let $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denote their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then there exist a $k \in \mathbb{N}$ such that 
+\[
+k < \log_2 m \qquad \text{and} \qquad \Var{\overline X_m} - \Var{X^{(k)}_i} < \frac{8}{m}\Var{X^{(k)}_i} \qquad \text{for all} \qquad 1 \leq i \leq 2^{-k}m.
+\]
+\end{corollary}
+
+\begin{proof}
+To do
+\end{proof}
+Moreover $S^2 = bla bla$ is an unbiased estimator of $\Var{\overline X_m}$. Bla bla.
+
+This theorem says that after less than $\log_2 m$ blocking iterations, the difference between the variance of the mean and variance of the blocked variables, is essentially zero. This is the case since $m$ is typically many orders of magnitude larger than $\Var{X^{(k)}_i}$.
+\section*{\uppercase{Conclusion and perspectives}}
 \section*{\uppercase{Appendix}}
 In this section we will prove the Hastings-Metropolis theorem. Often whilst proving results about Markov chains we are interested in whether the Markov chain can reach every state from any other state. In the following proof this is important because it ensures that all the divisions we will make are non-zero. Let's make this notion precise. Suppose $q_{  ij}$ is the transition probability matrix of a Markov chain $X_n$ and $S$ is the state space. We say that $X_n$ is \textit{\textbf{irreducible}} if for all $i,j \in S$ there exist an $n \in \mathbb{N}$ such that $(q^n)_{  ij}, (q^n)_{  ji} > 0$.\\
 \\
 Suppose that $X_n$ is irreducible and not deterministically periodic, then we say that the probabilities $\pi_i = P(X_n = i)$ is the \textit{\textbf{stationary distribution}} of $X_n$.\\
 \\
 We will say that $X_n$ is \textit{\textbf{time reversible}} if the conditional probability $P(X_{n} = j$, given that $X_{n+1} = i) = P_{  ij}$ for all $i,j \in S$ and $n \in \mathbb{N}$. Interestingly, it is easily shown that a Markov chain is time reversible if and only if $\pi_i P_{  ij} = \pi_j P_{  ji}$ for all $i,j \in S$. If you wish to prove this yourself, the proposition follows from Markov chain property and Bayes theorem. With these definitions, we are ready for the main result.
-\begin{theorem}[Hastings-Metropolis theorem]
+\begin{theorem*}[Hastings-Metropolis theorem]
 Suppose that $C\pi_i$ is a discrete probability distribution. If $q_{ij}$ is any irreducible transition probability matrix, and $X_n$ is a Markov chain with transition probability matrix 
 \begin{equation}
 P_{ij} = \ccases {
@@ -47,8 +226,8 @@ P_{ij} = \ccases {
 q_{  ii} + \sum_{k=0}^\infty q_{  ik}(1 - \alpha_{  ik})\quad & j=i
 },\qquad \text{where} \qquad \alpha_{  ij} = \min \left( \frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} , 1\right), \label{eq:metropolis}
 \end{equation}
-\end{theorem}
 then $X_n$ is time reversible with stationary distribution $\pi_i$.
+\end{theorem*}
 \begin{proof}
 Assume that the hypothesis is true. Then in particular $q_{  ij} \neq 0$ for all $i,j$ since $q$ is irreducible. Notice that if 
 \[
@@ -73,6 +252,53 @@ In the case that $\pi_j q_{  ji} < \pi_i q_{  ij}$ $(\ddagger)$, write
 \]
 which means $X_n$ is time reversible with stationary probability $\pi_i$.
 \end{proof}
-
+\begin{prop*}
+Suppose $X_1,\cdots, X_m$ are $m = 2^l$ identically distributed random variables with stationary non-negative covariances. Let $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denote their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then
+\[
+\varepsilon_k = \Var{\overline X_m} - \Var{X^{(k)}_i} = 2^{k+1} \sum_{t=1}^{2^{-k}m-1} \left( 1 - \frac{2^{k}t}{m} \right) \frac{(\gamma_k)_t}{m}
+\]
+\end{prop*}
+This is not a new result. This was shown by ffFlydbjerg og company. The proof is however containted in the appendix for completness.
+\begin{proof}
+Define the mean $\overline X_n = (1/n)\sum_{k=1}^n X_n$. Let's compute the variance of $\overline X_n$. Write
+\begin{equation}
+\Var{\overline X_n} = \frac{1}{n^2} \sum_{i=1}^n\sum_{j=1}^n \E{X_iX_j} - \E{X_i}\E{X_j} = \frac{1}{n^2} \sum_{i=1}^n\sum_{j=1}^n \cov (X_i,X_j) = \frac{1}{n^2} \sum_{i=1}^n\sum_{j=1}^n \Sigma_{ij}, \label{eq:varXn}
+\end{equation}
+where $\Sigma_{ij} \equiv \cov (X_i,X_j)$ are the elements of the covariance matrix $\Sigma$. In particular, that means that $\Sigma_{ii} = \cov (X_i,X_i) = \Var{X_i} = \sigma^2 \ (*)$ and $\Sigma_{ij} = \cov (X_i,X_j) = \cov (X_j,X_i) = \Sigma_{ji} \ (\dagger)$. Then hence by first splitting the summation at the right hand side of equation \eqref{eq:varXn} over the diagonal of $\Sigma$ and triangular parts of $\Sigma$ separately, we obtain:
+\begin{align}
+\Var{\overline X_n} &= \frac{1}{n^2}\sum_{i=1}^n\sum_{j=1}^n \Sigma_{ij} = \frac{1}{n^2} \Big( \sum_{i = 1}^n \undercbrace{\Sigma_{ii}}_{= \sigma^2 \ (*)} +  \sum_{i=1}^n\sum_{j=i+1}^n \Sigma_{ij} + \sum_{i=j+1}^n\sum_{j=1}^n \undercbrace{\Sigma_{ij} }_{=  \Sigma_{ji} \ (\dagger) } \Big) \nonumber \\
+&= \frac{1}{n^2} \Big( \undercbrace{\sum_{i=1}^n \sigma}_{=n\sigma^2} + \sum_{i=1}^n\sum_{j= i+1}^n \Sigma_{ij} + \undercbrace{\sum_{i=1}^n\sum_{j= i+1}^n \Sigma_{ji} }_{\sum_{j= i+1}^n\sum_{i=1}^n \Sigma_{ij}} \Big) = \frac{1}{n^2} \Big( n \sigma^2 + 2\sum_{i=1}^n\sum_{j= i+1}^n \Sigma_{ij} \Big) \label{eq:VarXn2}
+\end{align}
+Since the observations are identically distributed the covariances satisfy $\Sigma_{ij} = \Sigma_{(i+k)(j+k)}$ for all $i,j,k \in \mathbb{N}$ (check this). That means that along diagonals in $\Sigma$, the components of $\Sigma$ are constant.
+\[
+\Var{ \overline X_n } \stackrel{ \eqref{eq:VarXn2} }{=} \frac{1}{n} \Big( \sigma^2 + 2\sum_{i=1}^n\sum_{j= i+1}^n \frac{1}{n}\Sigma_{ij} \Big) = \frac{1}{n} \Big( \sigma^2 + 2\sum_{t=1}^{n-1}\sum_{j= i+1}^n \frac{1}{n}\Sigma_{ij} \Big)
+\]
+ Let's rewrite the last term. As you've seen, the sum is over the upper triangular (without the diagonal) elements of $\Sigma$. 
+\end{proof}
+\begin{lemma*}
+Suppose $X$ and $Y$ are random variables with finite variance, then
+\[
+| \cov (X,Y) |^2 \leq \cov (X,X) \cov (Y,Y)
+\]
+\label{lemma:inequality}
+\end{lemma*}
+\begin{proof}
+Suppose $\Omega$ denotes the vector space of all real random variables with finite variance over the real numbers. Suppose $X,Y \in \Omega$ and define
+\begin{equation}
+(X,Y) = \E{X Y}. \label{eq:innerproduct}
+\end{equation}
+To see that $\big( \Omega, (\cdot,\cdot) \big)$ is an inner product space, note that
+\begin{align*}
+\text{Positivity:} \qquad &(X,X) = \E{X^2} \geq 0 \qquad =0 \quad \text{if and only if} \quad X=0 \quad \text{almost surely.}\\ 
+\text{Symmetry:} \qquad &(X,Y) = \E{XY} = \E{YX} = (Y,X)\\ 
+\text{Bilinearity:} \qquad &(aX + bY,Z) = \E{(aX + bY)Z} = a\E{XZ} + b\E{YZ} = a(X,Z) + b(YZ) &
+\end{align*}
+This proves that $\langle \cdot, \cdot \rangle$ is an inner product on $\Omega$ (ref mcdonald and weiss). In particular, that means we can use Cauchy-Schwarz (ref). Now use the definition of covariance $(*)$ and apply Cauchy-Schwarz inequality $(**)$. Write
+\begin{align*}
+| \cov (X,Y) |^2 &\stackrel{(*)}{=} | \E{(X - \E{X})(Y - \E{Y})} |^2\qquad 0  \stackrel{\eqref{eq:innerproduct}}{=} | (X-\E{X}, Y-\E{Y}) |^2 \\
+&\stackrel{(**)}{\leq}  (X-\E{X}, X-\E{X})(X-\E{Y}, Y-\E{Y}) \stackrel{(*)\eqref{eq:innerproduct}}{=} \cov (X,X) \cov (Y,Y)
+\end{align*}
+Which is what we wanted.
+\end{proof}
 \printbibliography
 \end{document}
