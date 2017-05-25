@@ -36,11 +36,28 @@ E_T = \sum_{i=1}^N \left[ -\frac{1}{2} \frac{\nabla^2_i \psi_T}{\psi_T} + \frac{
 \frac{\nabla_i \psi_T}{\psi_T} = \vec{e}_1 \left( -\alpha \omega x_i + \frac{\gamma(x_i - x_j)}{(1 + \beta r_{ij})^2r_{ij}} \right) + \vec{e}_2 \left( - \alpha \omega y_i + \frac{\gamma(y_i-y_j)}{(1 + \beta r_{ij})^2r_{ij}} \right)
 \]
 \[
-\frac{\partial}{\partial \theta_j} E(\theta_1,\theta_2,\cdots \theta_n) = 2 \E{\frac{E}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} } - 2\E{\frac{1}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} }\E{E}
+\frac{\partial}{\partial \theta_j} \E{E}(\theta_1,\theta_2,\cdots \theta_n) = 2 \E{\frac{E}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} } - 2\E{\frac{1}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} }\E{E}
 \]
 \[
 \frac{1}{\psi_T}\pp \psi_T; \alpha; = - \frac{\omega}{2} \left( r_1^2 + r_2^2 \right) \qquad 
 \frac{1}{\psi_T}\pp \psi_T; \beta; = - \gamma \left( \frac{r_{12}}{1 + \beta r_{12}} \right)^2
+\]
+For more than two particles we generalize
+\[
+\nabla \phi_{  nx,ny} = \vec{e}_1 \left( 2n_x (\alpha \omega)^{1/2} \phi_{  nx-1,ny} - \alpha \omega x \phi_{  nx,ny} \right) + \vec{e}_2 \left( 2n_y(\alpha\omega)^{1/2} \phi_{  nx,ny-1} - \alpha \omega y \phi_{  nx,ny} \right)
+\]
+\begin{align*}
+\nabla^2 \phi_{  nx,ny} &= 4 \alpha \omega \left( n_x (n_x - 1)\phi_{  nx-2,ny} + n_y(n_y - 1)\phi_{  nx,ny-2} \right)  -4 (\alpha \omega)^{3/2} \left( x n_x\phi_{  nx-1,ny} + yn_y \phi_{  nx,ny-1} \right) \\
+&+ \alpha \omega \phi_{  nx,ny}\left( \alpha\omega r^2 - 2 \right)
+\end{align*}
+\[
+\frac{\nabla_k \psi_C}{\psi_C} = \sum_{  i=1, \ i \neq k}^n \frac{\gamma_{ik}}{(1 + \beta r_{ik})^2 r_{ik}} \Big( \vec e_1 (x_k -x_i) + \vec e_2 (y_k -y_i) \Big)
+\]
+\[
+\frac{\nabla_i^2 \psi_T}{\psi_T} = \frac{\nabla_i^2 |D|_\uparrow}{|D|_\uparrow} + \frac{\nabla_i^2 |D|_\downarrow}{|D|_\downarrow} + \frac{\nabla_i^2 \psi_C}{\psi_C} + 2 \left[ \frac{\nabla_i |D|_\uparrow}{|D|_\uparrow} + \frac{\nabla_i |D|_\downarrow}{|D|_\downarrow} \right] \cdot \frac{\nabla_i \psi_C }{ \psi_C }
+\]
+\[
+\frac{\nabla^2_k \psi_C}{\psi_C} = \left[ \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(x_k-x_j) }{(1 + \beta r_{kj})^2 r_{kj}} \right]^2 + \left[ \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(y_k-y_j) }{(1 + \beta r_{kj})^2 r_{kj}} \right]^2 + \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(1 - \beta r_{kj}) }{r_{kj} (1 + \beta r_{kj})^3}
 \]
 The report is structured by «introduction»-, «methods»-, «results and discussion»- and finally a «conclusion and perspectives»-sections.
 \section*{\uppercase{Methods}}
@@ -50,7 +67,13 @@ $\varrho \varsigma \vartheta \varpi$
 Next we want to prove the blocking method. The paper by Flyvbjerg and Petersen (ref) gives an excellent introduction for applications. Mathematically interested readers may be affronted by the paper because the paper does not contain proof of the method. The paper falsely claims that the blocking transformations has a fixed point and that conditions can be put on $\gamma_t$ such that repeated blockings ensure the $gamma_t$s wind up at $C\delta_{t0}$. This is false because the blocking transformations are not a linear operator (ref), and therefore $T$ cannot have a fixed point (ref) moreover. Since there is no fixed point, there is no basin of attraction (ref). We will however prove the blocking method, and study its properties, such as convergence rate and compute the error induced by the algorithm and present sufficient conditions such that the method is stable and converges. To my knowledge, this has never been done for the blocking method. As you will see, the method is suitable for estimation of the variance of random variables.
 \\
 \\
-Definer $\gamma_t$ før dette.
+Suppose $\overline X_m$ is the mean of $m$ random variables and you want to compute $\Var{\overline X_m}$. The blocking method is a way of quickly computing $\Var{\overline X_m}$, and is implemented as follows: Start by taking the average of every two sequential random variables from a time-series. That means that we obtain $m/2$ new random variables. If we keep on repeating this process we will obtain $m/2^k$ random variables after $k$ repetitions. We will call this a blocking transformation. It turns out that under certain conditions, there is some $k$, such that after $k$ blocking transformations, the variance of the blocked variables are essentially the same as $\Var{\overline X_m}$. Let's make this precise.\\
+\\
+Suppose that $X_1, \cdots, X_m$ are $m = 2^k$ identically distributed random variables. If we let $X^{(0)}_i = X_i$ for all $i \in \mathbb{N} = \{1,2,\cdots\}$ and
+\[
+x_i^{(k+1)} = \frac{1}{2} \left( x_{2i-1}^{(k)} + x_{2i}^{(k)} \right), \qquad \text{for all $k \in \mathbb{N}$}.
+\]
+If $k \in \mathbb{N}$ and $m^{(k)} = 2^{-k}m$, we will say that the set $\{X^{(k)}_i \;|\; i \in \{1,2,\cdots, m^{(k)}\}\}$ are \defn{subject to $\mathbold k$ blocking transformations}. We will later show that $m^{(k)} = 2^{-k}m$ is the appropriate number of random variables subject to $k$ blocking transformations. Also, we will define the autocovariance $\gamma_{i,j} = \cov (X_i,X_j)$. Snakk om stasjonær tidsserie og introduser $\gamma_t$.
 \begin{prop}
 Suppose $X_1,\cdots, X_m$ are $m = 2^l$ identically distributed random variables with stationary non-negative covariances. Let $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denote their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then
 \begin{equation}
@@ -75,8 +98,9 @@ k < \log_2m, \qquad n^{(k)} = 2^{-k}m.
 \begin{proof}
 $n^{(k)} = 2^{-k}m$ and $n^{(k+1)} = 2^{-(k+1)}m$, and so
 \[
-\frac{n^{(k)}}{n^{(k+1)}} = \frac{2^{-k}m}{2^{-(k+1)}m} = \frac{1}{2} \qquad \text{only if} \qquad 
+\frac{n^{(k)}}{n^{(k+1)}} = \frac{2^{-k}m}{2^{-(k+1)}m} = \frac{1}{2} \qquad %\text{only if} \qquad 
 \]  
+Rest to come
 \end{proof}
 \begin{lemma} Suppose $\gamma_t$ denote the correlation between two observations $X_i$ and $X_j$ such that $|i-j| = t$. Suppose also that $\gamma_t \geq 0$ for all $t$. Then 
 \[
@@ -96,9 +120,9 @@ Suppose $\varepsilon_k$ denotes the error after $k$ blocking iterations. Let $\{
 \varepsilon_k - \varepsilon_{  k+1} = \frac{(\gamma_k)_1 }{n^{(k)}} \label{eq:rate}
 \end{equation}
 \begin{proof}
-Vis at den er decreasing.\\
-\\
-It remains to prove formula \eqref{eq:rate}. We will manipulate sums and will be interested in which function $f(t)$ appear in the terms $\gamma^{(k)}_{f(t)}$ inside the summation. For simplicity, lets agree to write: 
+%Vis at den er decreasing.\\
+%\\
+It remains to prove formula \eqref{eq:rate}. We will manipulate sums and will be interested in which function $f(t)$ appear in the terms $\gamma^{(k)}_{f(t)}$ inside the summation. Define a functional $S_{f(j)} : \{2x-1,2x,2x+1\} \to \mathbb{R}$ by: 
 \[S_{f(j)} \equiv \frac{1}{n^{(k)}} \sum_{t=1}^{n^{(k)}/2-1} \left( 1 - \frac{2t}{n^{(k)}} \right) \gamma^{(k)}_{f(t)}. \]
 That means, using $n^{(k+1)} = n^{(k)}/2$ , we can rewrite $\varepsilon_{  k+1}$ as
 \begin{align}
@@ -186,7 +210,7 @@ k < \log_2 m \qquad \text{and} \qquad \Var{\overline X_m} - \Var{X^{(k)}_i} < \f
 \]
 \end{theorem}
 \begin{proof}
-Bruk masse ulikheter
+To come.%Bruk masse ulikheter
 \end{proof}
 
 \begin{corollary}

@@ -48,8 +48,12 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../mons/main.cpp 
-OBJECTS       = main.o
+SOURCES       = ../mons/main.cpp \
+		../mons/energy.cpp \
+		../mons/basis.cpp 
+OBJECTS       = main.o \
+		energy.o \
+		basis.o
 DIST          = /home/marius/Qt/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/common/unix.conf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/common/linux.conf \
@@ -183,6 +187,7 @@ DIST          = /home/marius/Qt/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/qt_config.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/spec_post.prf \
+		../mons/.qmake.stash \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/default_pre.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/resolve_config.prf \
@@ -193,7 +198,10 @@ DIST          = /home/marius/Qt/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/exceptions.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/yacc.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/lex.prf \
-		../mons/mons.pro  ../mons/main.cpp
+		../mons/mons.pro basis.h \
+		maths.h ../mons/main.cpp \
+		../mons/energy.cpp \
+		../mons/basis.cpp
 QMAKE_TARGET  = mons
 DESTDIR       = 
 TARGET        = mons
@@ -338,6 +346,7 @@ Makefile: ../mons/mons.pro /home/marius/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.co
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/qt_config.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.conf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/default_pre.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/resolve_config.prf \
@@ -483,6 +492,7 @@ Makefile: ../mons/mons.pro /home/marius/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.co
 /home/marius/Qt/5.7/gcc_64/mkspecs/features/qt_config.prf:
 /home/marius/Qt/5.7/gcc_64/mkspecs/linux-g++/qmake.conf:
 /home/marius/Qt/5.7/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /home/marius/Qt/5.7/gcc_64/mkspecs/features/exclusive_builds.prf:
 /home/marius/Qt/5.7/gcc_64/mkspecs/features/default_pre.prf:
 /home/marius/Qt/5.7/gcc_64/mkspecs/features/resolve_config.prf:
@@ -537,8 +547,15 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../mons/main.cpp 
+main.o: ../mons/main.cpp ../mons/basis.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../mons/main.cpp
+
+energy.o: ../mons/energy.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o energy.o ../mons/energy.cpp
+
+basis.o: ../mons/basis.cpp ../mons/basis.h \
+		../mons/maths.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o basis.o ../mons/basis.cpp
 
 ####### Install
 
