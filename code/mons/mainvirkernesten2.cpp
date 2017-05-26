@@ -43,35 +43,20 @@ int main(int nargs, char *args[])
     }
     //B.print();
     //return 0;
-    double w = 0.01;
+    double w = 1;
     double a, b;
-    if (w == 1) {
-        switch(n) {
-            case 6:
-               a = 1.03741; b = 0.472513; break;
-            case 12:
-               a = 1.10364; b = 0.468861; break;
-        case 20:
-           a = 1.06019; b = 0.474467; break;
-            default:
-               a = 1.0; b = 0.4;
-        }
-    } else if(w == 0.1)  {
-        switch(n) {
-            case 6:
-               a = 0.831104; b = 0.211443; break;
-            case 12:
-               a = 0.84105; b = 0.208143;  break;
-        case 20:
-           a = 0.856981; b = 0.200372; break;
-            default:
-               a = 0.952833; b = 0.354292;
-        }
-    } else if(w == 0.01)  {
-        switch(n) {
-            default:
-               a = 0.911692; b = 0.203919;
-        }
+    switch(n) {
+        case 6:
+           a = 1.04; b = 0.47;
+           break;
+        case 12:
+           a = 1.1; b = 0.47;
+           break;
+    case 20:
+       a = 1.06; b = 0.4744;
+       break;
+        default:
+           a = 1.0; b = 0.4;
     }
     double dt = 0.005; double d = 0.5;
     mat r = randn<mat>(2,n);
@@ -93,7 +78,7 @@ int main(int nargs, char *args[])
 //        F += 2*delPsi(s, r, invDplus, invDminus, a, b, c, w);
 //    Fpp = F;
 
-    int iterations = pow(2,16);
+    int iterations = pow(2,18);
     double wf = det(Dplus)*det(Dminus)*psiC(r,b,c);
     double e; double E = 0;
     int u = 0; int v = 0; int k;
@@ -108,19 +93,19 @@ int main(int nargs, char *args[])
     double time_start = MPI_Wtime();
     if (my_rank == 0) {
         cout << "Numprocs = " << numprocs << endl;
-        cout << "a = " << a << ", b = " << b << endl;
+        cout << "a = " << a << ", b= " << b << endl;
     }
     for (u = 0; u < iterations; u++) {
         k = rand_particle(gen);
-        //r = rpp;
+        r = rpp;
         //r.col(k) = rpp.col(k) + randn<vec>(2);
-        Fpp = 2*delPsi(k,rpp,invDpluspp,invDminuspp,a,b,c,w);
         r.col(k) = rpp.col(k) + d*Fpp*dt + randn<vec>(2)*sqrt(dt);
         Dplus  = D(r, 0, a, w);
         Dminus = D(r, 1, a, w);
         invDplus = inv(Dplus);
         invDminus = inv(Dminus);
         F = 2*delPsi(k,r,invDplus,invDminus,a,b,c,w);
+        Fpp = 2*delPsi(k,rpp,invDpluspp,invDminuspp,a,b,c,w);
         p = rpp.col(k) - r.col(k) - d*dt*F;
         q = r.col(k) - rpp.col(k) - d*dt*Fpp;
         double Gyx = exp(- dot(p,p)/(4*d*dt));
@@ -164,6 +149,7 @@ double laplaceJastrow(int k, mat r, double b, mat c) {
 }
 
 vec delJastrow(int k, mat r, double b, mat c) {
+    //return zeros<vec>(2);
     vec sum = zeros<vec>(2);
     for (int j = 0; j <n; j++) {
         if (k == j)

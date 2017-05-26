@@ -33,6 +33,12 @@ mat D(mat r, int spin, double a, double w);
 double psiC(mat r, double b, mat c);
 
 
+double psi(vec r1, vec r2,double a, double b, double c, double w) {
+    double r12 = norm(r1 - r2);
+    return exp(-0.5*a*w*( dot(r1,r1) + dot(r2,r2) ) + c*r12/(1 + b*r12) );
+}
+
+
 int main(int nargs, char *args[])
 {
     for (int i = 0; i < n; i++) {
@@ -41,37 +47,17 @@ int main(int nargs, char *args[])
                  c(i,j) = 1/3.;
         }
     }
-    //B.print();
-    //return 0;
-    double w = 0.01;
+    double w = 1;
     double a, b;
-    if (w == 1) {
-        switch(n) {
-            case 6:
-               a = 1.03741; b = 0.472513; break;
-            case 12:
-               a = 1.10364; b = 0.468861; break;
-        case 20:
-           a = 1.06019; b = 0.474467; break;
-            default:
-               a = 1.0; b = 0.4;
-        }
-    } else if(w == 0.1)  {
-        switch(n) {
-            case 6:
-               a = 0.831104; b = 0.211443; break;
-            case 12:
-               a = 0.84105; b = 0.208143;  break;
-        case 20:
-           a = 0.856981; b = 0.200372; break;
-            default:
-               a = 0.952833; b = 0.354292;
-        }
-    } else if(w == 0.01)  {
-        switch(n) {
-            default:
-               a = 0.911692; b = 0.203919;
-        }
+    switch(n) {
+        case 6:
+           a = 1.04; b = 0.47;
+           break;
+        case 12:
+           a = 1.1; b = 0.47;
+           break;
+        default:
+           a = 1.0; b = 0.4;
     }
     double dt = 0.005; double d = 0.5;
     mat r = randn<mat>(2,n);
@@ -93,7 +79,7 @@ int main(int nargs, char *args[])
 //        F += 2*delPsi(s, r, invDplus, invDminus, a, b, c, w);
 //    Fpp = F;
 
-    int iterations = pow(2,16);
+    int iterations = pow(2,18);
     double wf = det(Dplus)*det(Dminus)*psiC(r,b,c);
     double e; double E = 0;
     int u = 0; int v = 0; int k;
@@ -108,14 +94,15 @@ int main(int nargs, char *args[])
     double time_start = MPI_Wtime();
     if (my_rank == 0) {
         cout << "Numprocs = " << numprocs << endl;
-        cout << "a = " << a << ", b = " << b << endl;
+        cout << "a = " << a << ", b= " << b << endl;
     }
     for (u = 0; u < iterations; u++) {
+        /*
         k = rand_particle(gen);
-        //r = rpp;
-        //r.col(k) = rpp.col(k) + randn<vec>(2);
-        Fpp = 2*delPsi(k,rpp,invDpluspp,invDminuspp,a,b,c,w);
+        int not_k = (k+1) % 2;
+        r = rpp;
         r.col(k) = rpp.col(k) + d*Fpp*dt + randn<vec>(2)*sqrt(dt);
+//        r.col(k) = r.col(k) + randu<vec>(2) - 0.5;
         Dplus  = D(r, 0, a, w);
         Dminus = D(r, 1, a, w);
         invDplus = inv(Dplus);
@@ -123,16 +110,19 @@ int main(int nargs, char *args[])
         F = 2*delPsi(k,r,invDplus,invDminus,a,b,c,w);
         p = rpp.col(k) - r.col(k) - d*dt*F;
         q = r.col(k) - rpp.col(k) - d*dt*Fpp;
+        double G = exp((dot(q,q) - dot(p,p))/(4*d*dt));
         double Gyx = exp(- dot(p,p)/(4*d*dt));
         double Gxy = exp(- dot(q,q)/(4*d*dt));
-        wf = det(Dplus)*det(Dminus)*psiC(r,b,c);
+        wf = psi(r.col(0),r.col(1), a,b,1,w);
+//        wf = det(Dplus)*det(Dminus)*psiC(r,b,c);
+*/
         // hasting-metropolis test
-        if ( wf*wf*Gyx/(wfpp*wfpp*Gxy) > rand_double(gen) ) {
-            rpp = r; wfpp = wf; Dpluspp = Dplus; Dminuspp = Dminus; invDpluspp = invDplus; invDminuspp = invDminus;
+        if ( wf*wf*Gyx/(wfpp*wfpp*Gxy ) > rand_double(gen) ) {
+            rpp = r; wfpp = wf; Dpluspp = Dplus; Dminuspp = Dminus; invDpluspp = invDplus; invDminuspp = invDminus; Fpp = F;
             v++;
         }
+        /*
         // sample energy
-
         e = 0;
         for (int i = 0; i < n; i++) {
             e += -0.5*laplacePsi(i, rpp, invDpluspp, invDminuspp, a, b, c, w) + 0.5*w*w*dot(rpp.col(i),rpp.col(i));
@@ -141,6 +131,7 @@ int main(int nargs, char *args[])
             }
         }
         E += e/iterations;
+        */
     }
     MPI_Reduce(&E, &result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
     MPI_Finalize();
@@ -164,6 +155,7 @@ double laplaceJastrow(int k, mat r, double b, mat c) {
 }
 
 vec delJastrow(int k, mat r, double b, mat c) {
+    //return zeros<vec>(2);
     vec sum = zeros<vec>(2);
     for (int j = 0; j <n; j++) {
         if (k == j)
