@@ -2,28 +2,38 @@
 #include <string>
 #include <armadillo>
 #include <random>
+#include <mpi.h>
 #include "basis.h"
 #include "maths.h"
 
 using namespace std;
 using namespace arma;
 
+
+
 // definere globale variable fordi jeg ønsker det.
 int n = 2;
-basis B = basis(n);
+
+basis B = basis(5);
 mat c = ones<mat>(n,n);
 
+random_device rd;
+mt19937 gen(rd());
+uniform_int_distribution<int> rand_particle(0, n-1);
+uniform_int_distribution<int> rand_bool(0, 1);
+uniform_real_distribution<double> rand_double(0.0,1.0);
 
-double laplacePsi(int i, mat r, double a, double b, mat c, double w);
-double laplaceD(int i, int spin, mat r,double a,double b,mat c,double w);
-double laplaceJastrow(int k,mat r, double a, double b, mat c);
-vec delD(mat invDplus, mat invDminus, int i, int spin, mat r, double a, double b, mat c, double w);
-vec delJastrow(int k, int spin, mat r, double a, double b, mat c);
+double laplacePsi(int i, mat r, mat invDplus, mat invDminus, double a, double b, mat c, double w);
+double laplaceD(mat invDplus, mat invDminus, int i, int spin, mat r, double a, double w);
+double laplaceJastrow(int k, mat r, double b, mat c);
+vec delPsi(int i, mat r, mat invDplus, mat invDminus, double a, double b, mat c, double w);
+vec delD(mat invDplus, mat invDminus, int i, int spin, mat r, double a, double w);
+vec delJastrow(int k, mat r, double b, mat c);
 mat D(mat r, int spin, double a, double w);
-double psiC(mat r, double a, double b, mat c);
+double psiC(mat r, double b, mat c);
 
 
-int main(int argc, char *argv[])
+int main(int nargs, char *args[])
 {
     for (int i = 0; i < n; i++) {
         for (int j = 0; j< n; j++) {
@@ -31,147 +41,219 @@ int main(int argc, char *argv[])
                  c(i,j) = 1/3.;
         }
     }
-    double E = 0;
-    double w = 1;
-    double a = 1;
-    double b = 0.4;
+    //B.print();
+    //return 0;
+    double w = 1; double a = 1.0; double b = 0.4;
+    double dt = 0.005; double d = 0.5;
     mat r = randn<mat>(2,n);
     mat Dplus = D(r, 0, a, w);
-    mat Dminus = D(r, 0, a, w);
+    mat Dminus = D(r, 1, a, w);
     mat invDplus  = inv(Dplus);
     mat invDminus = inv(Dminus);
 
-    double sum = 0;
-    for (int i = 0; i < n; i++) {
-        vec U = delD(invDplus,invDminus, i, i % 2, r, a,b,c,w);
-        //U.print();
-        vec V = delJastrow(i,i%2,r,a,b,c);
-        V.print();
-        //sum += dot(delD(invDplus,invDminus, i, i % 2, r, a,b,c,w), delJastrow(i,i%2,r,a,b,c) );
-    }
-    double exact = -a*1*w*norm(r.col(0) - r.col(1))/pow(1 + b*norm(r.col(0) - r.col(1)),2);
-    cout << "Exact answer: " << exact << endl;
-    cout << "Numerical answer: " << sum << endl;
-    return 0;
+    mat rpp = r;
+    mat Dpluspp = Dplus;
+    mat Dminuspp = Dminus;
+    mat invDpluspp  = invDplus;
+    mat invDminuspp = invDminus;
+    vec F = zeros<vec>(2);
+    vec Fpp = zeros<vec>(2);
 
-    for (int i = 0; i < n; i++) {
-        //E += -0.5*laplacePsi(i, r, invDplus, invDminus, a, b, c, w) + 0.5*w*w*dot(r.col(i),r.col(i));
-        for (int j = i+1; j < n; j++) {
-            //E += 1/norm(r.col(i) - r.col(j));
+//    for (int s = 0; s < n; s++)
+//        F += 2*delPsi(s, r, invDplus, invDminus, a, b, c, w);
+//    Fpp = F;
+
+    int iterations = pow(2,18);
+    double wf = det(Dplus)*det(Dminus); //*psiC(r,b,c);
+    double e; double E = 0;
+    int u = 0; int v = 0; int k;
+    double wfpp = wf;
+    double result = 0;
+
+    MPI_Init(&nargs, &args);
+    int numprocs;
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+    int my_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+    double time_start = MPI_Wtime();
+    if (my_rank == 0)
+        cout << "Numprocs = " << numprocs << endl;
+
+    for (u = 0; u < iterations; u++) {
+        r = rpp;
+        r.col(k) = rpp.col(k) + randn<vec>(2);
+        Dplus  = D(r, 0, a, w);
+        Dminus = D(r, 1, a, w);
+        invDplus = inv(Dplus);
+        invDminus = inv(Dminus);
+
+
+        double G = 1;
+        //double G = exp((dot(q,q) - dot(p,p))/(4*d*dt));
+        wf = det(Dplus)*det(Dminus)*psiC(r,b,c);
+        // hasting-metropolis test
+        if ( wf*wf*G/(wfpp*wfpp ) > rand_double(gen) ) {
+            rpp = r; wfpp = wf; Dpluspp = Dplus; Dminuspp = Dminus; invDpluspp = invDplus; invDminuspp = invDminus; Fpp = F;
+            v++;
         }
+
+        // sample energy
+        e = 0;
+        for (int i = 0; i < n; i++) {
+            e += -0.5*laplacePsi(i, rpp, invDpluspp, invDminuspp, a, b, c, w) + 0.5*w*w*dot(rpp.col(i),rpp.col(i));
+            for (int j = i+1; j < n; j++) {
+                e += 1./norm(rpp.col(i) - rpp.col(j));
+            }
+        }
+        E += e/iterations;
     }
+    MPI_Reduce(&E, &result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Finalize();
+    if (my_rank == 0)
+        cout << "<E> = " << result/numprocs << ", r = " << (double) v/iterations << ", elapsed: " << MPI_Wtime() - time_start << endl;
     return 0;
 }
 
-vec delD(mat invDplus, mat invDminus, int i, int spin, mat r, double a, double b, mat c, double w) {
-    vec sum = zeros<vec>(2);
-    mat invD;
-    if (spin) {
-        invD = invDminus;
-    } else {
-        invD = invDplus;
+double laplaceJastrow(int k, mat r, double b, mat c) {
+    //return 0;
+    double x = 0;
+    double y = 0;
+    double xy = 0;
+    double rkj;
+    for (int j = 0; j < n; j++) {
+        if (j == k)
+            continue;
+        rkj = norm(r.col(k) - r.col(j));
+        x += c(k,j)*(r(0,k) - r(0,j))/( pow(1 + b*rkj,2)*rkj);
+        y += c(k,j)*(r(1,k) - r(1,j))/( pow(1 + b*rkj,2)*rkj);
+        xy += c(k,j)*(1 - b*rkj)/(pow(1 + b*rkj,3)*rkj);
     }
-    for (int j = 0; j <n/2; j++) {
-        int nx = B.get_state(2*j + 1 + spin)[1];
-        int ny = B.get_state(2*j + 1 + spin)[1];
-        double x = r(0,i);
-        double y = r(1,i);
-        sum[0] += invD(j,floor(i/2))*(2*nx*sqrt(a*w)*B.psi(nx-1,ny,x,y,a,w) - a*w*x*B.psi(nx,ny,x,y,a,w));
-        sum[1] += invD(j,floor(i/2))*(2*ny*sqrt(a*w)*B.psi(nx,ny-1,x,y,a,w) - a*w*y*B.psi(nx,ny,x,y,a,w));
-    }
-    return sum;
+    return x*x + y*y + xy;
 }
 
-vec delJastrow(int k, int spin, mat r, double a, double b, mat c) {
+vec delJastrow(int k, mat r, double b, mat c) {
+    //return zeros<vec>(2);
     vec sum = zeros<vec>(2);
-    for (int j = spin; j <n; j+=2) {
+    for (int j = 0; j <n; j++) {
         if (k == j)
             continue;
-        cout << "hi" << endl;
         double rjk = norm(r.col(j) - r.col(k));
-        double tmp = c(j,k)/((1 + b*rjk)*rjk);
+        double tmp = c(j,k)/(pow((1 + b*rjk),2)*rjk);
         sum[0] += tmp*(r(0,k) - r(0,j));
         sum[1] += tmp*(r(1,k) - r(1,j));
     }
     return sum;
 }
 
-double psiC(mat r, double a, double b, mat c) {
-    double jastrow = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            double rij = norm(r.col(i) - r.col(j));
-            jastrow += c(i,j)*rij/(1+b*rij);
-        }
-    }
-    return jastrow;
+vec delPsi(int i, mat r, mat invDplus, mat invDminus, double a, double b, mat c, double w) {
+    return delD(invDplus,invDminus, i, i % 2, r, a, w) + delJastrow(i, r, b, c);
 }
+
+
+double laplaceD(mat invDplus, mat invDminus, int i, int spin, mat r, double a,double w) {
+    double sum = 0;
+    mat invD;
+    if (spin == 1) {
+        invD = invDminus;
+    } else {
+        invD = invDplus;
+    }
+    for (int j = 0; j < n/2; j ++ ) { // sjekk indekser her
+        int nx = B.get_state(2*j + 1 + spin)[0];
+        int ny = B.get_state(2*j + 1 + spin)[1];
+        double x = r(0,i);
+        double y = r(1,i);
+        sum += invD(j,i/2)*(4*a*w*(nx*(nx-1)*B.psi(nx-2,ny,sqrt(a)*x,sqrt(a)*y,w) + ny*(ny-1)*B.psi(nx,ny-2,sqrt(a)*x,sqrt(a)*y,w))
+               - 4*pow(a*w,1.5)*(x*nx*B.psi(nx-1,ny,sqrt(a)*x,sqrt(a)*y,w) + y*ny*B.psi(nx,ny-1,sqrt(a)*x,sqrt(a)*y,w) )
+               + a*w*B.psi(nx,ny,sqrt(a)*x,sqrt(a)*y,w)*(a*w*dot(r.col(i),r.col(i)) -2));
+    }
+    return sum;
+}
+
+vec delD(mat invDplus, mat invDminus, int i, int spin, mat r, double a, double w) {
+
+    vec sum = zeros<vec>(2);
+    double sjekk = 0;
+    mat invD;
+
+    if (spin == 1) {
+        invD = invDminus;
+        //Dmat = D(r, 1, a, w);
+    } else {
+        invD = invDplus;
+        //Dmat  = D(r, 0, a, w);
+    }
+
+    for (int j = 0; j <n/2; j++) {
+        int nx = B.get_state(2*j + 1 + spin)[0];
+        int ny = B.get_state(2*j + 1 + spin)[1];
+        double x = r(0,i);
+        double y = r(1,i);
+        sum[0] += invD(j,i/2)*(2*nx*sqrt(a*w)*B.psi(nx-1,ny,sqrt(a)*x,sqrt(a)*y,w) - a*w*x*B.psi(nx,ny,sqrt(a)*x,sqrt(a)*y,w));
+        sum[1] += invD(j,i/2)*(2*ny*sqrt(a*w)*B.psi(nx,ny-1,sqrt(a)*x,sqrt(a)*y,w) - a*w*y*B.psi(nx,ny,sqrt(a)*x,sqrt(a)*y,w));
+    }
+
+    return sum;
+
+}
+
 
 mat D(mat r, int spin, double a, double w) {
     mat D = ones<mat>(n/2,n/2);
     for (int i = 0; i < n/2; i++) {
         for (int j = 0; j< n/2; j++) {
-            int nx = B.get_state(2*i+1+spin)[1];
-            int ny = B.get_state(2*i+1+spin)[0];
-            D(i,j) = B.psi(nx,ny,r(0,2*j+spin),r(1,2*j+spin),a,w);
+            int nx = B.get_state(2*j+1+spin)[0];
+            int ny = B.get_state(2*j+1+spin)[1];
+            D(i,j) = B.psi(nx,ny,sqrt(a)*r(0,2*i+spin),sqrt(a)*r(1,2*i+spin),w);
         }
     }
     return D;
 }
 
+double psiC(mat r, double b, mat c) {
+    double jastrow = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i+1; j < n; j++) {
+            double rij = norm(r.col(i) - r.col(j));
+            jastrow += c(i,j)*rij/(1+b*rij);
+        }
+    }
+    return exp(jastrow);
+}
+
+
 double laplacePsi(int i, mat r, mat invDplus, mat invDminus, double a, double b, mat c, double w) {
     double sum = 0;
     int spin = i % 2; // 0 impliserer spin opp
     // compute laplace D+/- avhengig av spin
-    sum += laplaceD(i, spin, r, a, b, c, w);
+    sum += laplaceD(invDplus, invDminus, i,spin, r,a,w);
     // compute laplace jastrow
-    sum += laplaceJastrow(i, r, a, b, c);
+    sum += laplaceJastrow(i, r, b, c);
     // compute del D+/- dot del jastrow
-    sum += dot(delD(invDplus, invDminus, i, spin, r, a, b, c, w), delJastrow(i, spin, r, a, b, c));
+    sum += 2*dot(delD(invDplus, invDminus, i, spin, r, a, w), delJastrow(i, r, b, c));
     // return sum of terms
     return sum;
 }
 
-double laplaceD(int i, int spin, mat r, double a,double b, mat c,double w) {
-    double sum = 0;
-    for (int j = spin; j < n; j += 2 ) { // sjekk indekser her
-        int nx = B.get_state(j+1)[1];
-        int ny = B.get_state(j+1)[0];
-        double x = r(0,j);
-        double y = r(1,j);
-        sum += 4*a*w*(nx*(nx-1)*B.psi(nx-2,ny,x,y,a,w) + ny*(ny-1)*B.psi(nx,ny-2,x,y,a,w)) - 4*pow(a*w,1.5)*(x*nx*B.psi(nx-1,ny,x,y,a,w)
-               + y*ny*B.psi(nx,ny-1,x,y,a,w) ) + a*w*B.psi(nx,ny,x,y,a,w)*(a*w*dot(r.col(j),r.col(j)) -2);
-    }
-    return sum;
-}
 
-double laplaceJastrow(int k, mat r,double a, double b, mat c) {
-    double sum = 0;
-    double s = 0;
-    double rkj;
-    for (int j = 0; j < n; j++) {
-        if (j == k)
-            continue;
-        rkj = norm(r.col(k) - r.col(j));
-        s += c(k,j)*(r(0,k) - r(0,j))/((1 + b*rkj)*rkj);
-    }
-    sum += s*s;
-    s = 0;
-    for (int j = 0; j < n; j++) {
-        if (j == k)
-            continue;
-        rkj = norm(r.col(k) - r.col(j));
-        s += c(k,j)*(r(1,k) - r(1,j))/((1 + b*rkj)*rkj);
-    }
-    sum += s*s;
-    s = 0;
-    for (int j = 0; j < n; j++) {
-        if (j == k)
-            continue;
-        rkj = norm(r.col(k) - r.col(j));
-        s += c(k,j)*(1 - b*rkj)/(pow(1 + b*rkj,3)*rkj);
-    }
-    sum += s;
-    return sum;
-}
+/*
+    // for 2 partikkel, w = 1 regne ut produktet delJastrow*delpsi0
+    cout << Dplus(0,0)*Dminus(0,0)*psiC(r, b, c) << endl;
+    cout << psi(r.col(0), r.col(1), a, b, 1, w) << endl;
 
+    double sum = 0;
+    for (int i = 0; i < n; i++) {
+        sum += dot( delD(invDplus,invDminus, i, i % 2, r, a, w), delJastrow(i, r, b, c) );
+    }
+    double exact = -a*1*w*norm(r.col(0) - r.col(1))/pow(1 + b*norm(r.col(0) - r.col(1)),2);
+//    cout << "Exact answer: " << exact << endl;
+    cout << "Numerical answer: " << sum << endl;
+
+//    cout << "LaplaceD_1 numerics: " << laplaceD(invDplus, invDminus, 1,1, r,a,w) << endl;
+//    cout << laplaceD(invDplus, invDminus, 0,0, r,a,w) << endl;
+//    cout << "LaplaceD_1 exact: " << a*a*w*w*dot(r.col(1),r.col(1)) - 2*a*w << " " << a*a*w*w*dot(r.col(0),r.col(0)) - 2*a*w << endl;
+
+    cout << "Laplace jastrow numerics: " << laplaceJastrow(0,r,a,b,c) << endl;
+    double r12 = norm(r.col(0) - r.col(1) );
+    cout << "Laplace jastrow exact: " << (1 + r12 - b*b*r12*r12 )/(r12*pow(1 + b*r12,4))  << endl;
+    */

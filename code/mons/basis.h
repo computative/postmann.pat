@@ -13,8 +13,8 @@ public:
     void print();
     void to_file(string filename);
     double hermite(int n, double x);
-    double psi_n(int n, double x,double a,double w);
-    double psi(int nx, int ny, double x, double y, double a, double w);
+    double psi_n(int n, double x, double w);
+    double psi(int nx, int ny, double x, double y, double w);
     int ** state;
     int numStates;
 };

@@ -10,11 +10,11 @@ MAKEFILE      = Makefile
 
 ####### Compiler, tools and options
 
-CC            = gcc
-CXX           = g++
+CC            = mpicc
+CXX           = mpicxx
 DEFINES       = 
-CFLAGS        = -pipe -O2 -Wall -W -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -fopenmp -O3 -std=gnu++11 -Wall -W -fPIC $(DEFINES)
+CFLAGS        = -pipe -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include -I/usr/lib/x86_64-linux-gnu/openmpi/include -pthread -O2 -Wall -W -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -fopenmp -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include -I/usr/lib/x86_64-linux-gnu/openmpi/include -pthread -DMPICH_IGNORE_CXX_SEEK -O3 -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include -I/usr/lib/x86_64-linux-gnu/openmpi/include -pthread -DMPICH_IGNORE_CXX_SEEK -std=gnu++11 -Wall -W -fPIC $(DEFINES)
 INCPATH       = -I../mons -I. -I/home/marius/Qt/5.7/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/marius/Qt/5.7/gcc_64/bin/qmake
 DEL_FILE      = rm -f
@@ -34,8 +34,8 @@ TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = mons1.0.0
 DISTDIR = /home/marius/Dokumenter/fys4411/postmann.pat/code/build-mons-Desktop_Qt_5_7_0_GCC_64bit-Release/.tmp/mons1.0.0
-LINK          = g++
-LFLAGS        = -Wl,-O1
+LINK          = mpicxx
+LFLAGS        = -pthread -L/usr//lib -L/usr/lib/x86_64-linux-gnu/openmpi/lib -lmpi_cxx -lmpi -Wl,-O1
 LIBS          = $(SUBLIBS) -fopenmp -larmadillo -llapack -lblas 
 AR            = ar cqs
 RANLIB        = 
@@ -547,7 +547,8 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../mons/main.cpp ../mons/basis.h
+main.o: ../mons/main.cpp ../mons/basis.h \
+		../mons/maths.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../mons/main.cpp
 
 energy.o: ../mons/energy.cpp 

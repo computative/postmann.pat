@@ -106,60 +106,6 @@ int main(int argc, char *argv[])
         }
         xpp = x;
     }
-
-    /*
-        iterations = 100000;
-        double apsi = 0;
-        double bpsi = 0;
-        double eapsi = 0;
-        double ebpsi = 0;
-        vec p; vec q;
-        mat r = randn<mat>(2,2); mat rpp = randn<mat>(2,2);
-        vec Fpp = randn<vec>(2); vec F = randn<vec>(2);
-        int i = 0;
-        int j;
-
-        //double app = a - a/10; bpp = b - b/10;
-        double rij = norm(rpp.col(0) - rpp.col(1)); double rijpp = norm(rpp.col(0) - rpp.col(1));
-        double wfpp = psi(rpp.col(0),rpp.col(1), x[0],x[1],c,w);
-        E = 0;  E2 = 0;
-
-        j = 0;
-        while (i < iterations ) {
-            //a = 1; b = 0.40061;
-            a = 1; b = 0.40061;
-            k = rand_particle(gen);
-            not_k = (k+1) % 2;
-
-            rijpp = norm(rpp.col(0)-rpp.col(1));
-            Fpp = -2*a*w*rpp.col(k) + 2*c*(rpp.col(k) - rpp.col(not_k))/( (1 + b*rijpp)*(1 + b*rijpp)*rijpp );
-
-            r.col(k) = rpp.col(k) + D*Fpp*dt + randn<vec>(2)*sqrt(dt);
-            rij = norm(r.col(0)-r.col(1));
-            F    = -2*a*w*r.col(k) + 2*c*(r.col(k) - r.col(not_k))/( (1 + b*rij)*(1 + b*rij)*rij );
-            p = rpp.col(k) - r.col(k) - D*dt*F;
-            q = r.col(k) - rpp.col(k) - D*dt*Fpp;
-            Gyx = exp(- dot(p,p)/(4*D*dt));
-            Gxy = exp(- dot(q,q)/(4*D*dt));
-            wf = psi(r.col(0),r.col(1), a,b,c,w);
-
-            if ( wf*wf*Gyx/(wfpp*wfpp*Gxy ) > rand_double(gen) ) {
-                rpp = r; wfpp = wf; rij = norm(r.col(0) - r.col(1) );
-                j++;
-            }
-            e = 1/rij + 0.5*w*w*(1-a*a)*( dot(rpp.col(0),rpp.col(0)) + dot(rpp.col(1),rpp.col(1)) )
-                      + 2*a*w + a*w*c*rij/pow(1 + rij*b,2) - c*(1+rij*c-b*b*rij*rij)/( rij*pow(1 + rij*b,4) );
-
-            apsi += -(w/2.0)*(dot(r.col(0),r.col(0)) + dot(r.col(1),r.col(1)) );
-            bpsi += (-c*rij*rij)/pow(1 + b*rij,2);
-            eapsi += e*apsi;
-            ebpsi += e*bpsi;
-            E += e/iterations;
-            E2 += e*e/iterations;
-            i++;
-        }
-    cout << E << " " << E2 - E*E << " " << (double) j/iterations << endl;
-    */
     return 0;
 }
 

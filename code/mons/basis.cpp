@@ -9,7 +9,6 @@ using namespace std;
 
 const double hbar  = 1.0;
 const double m  = 1.0;
-const double w  = 1.0;
 
 basis::basis(int n) // number of shells is n
 {
@@ -18,8 +17,8 @@ basis::basis(int n) // number of shells is n
     for (int i = 0; i < n; i++) {                       // for each shell
         for (int j = 0; j < 2*(i+1); j++) {             // for each state in shell
             state[i*(i+1) + j] = new int[4];
-            state[i*(i+1) + j][0] = (j - j%2)/2;        // set nx
-            state[i*(i+1) + j][1] = i - (j - j%2)/2;    // set ny
+            state[i*(i+1) + j][0] = i - (j - j%2)/2;    // set nx
+            state[i*(i+1) + j][1] = (j - j%2)/2;        // set ny
             state[i*(i+1) + j][2] = j % 2;              // set spinprojection
             state[i*(i+1) + j][3] = i + 1;              // set energy/omega
         }
@@ -70,17 +69,19 @@ double basis::hermite(int n, double x)
     int N = floor(n/2);
     double S = 0;
     for (int m = 0; m<=N; m++) {
-        S += pow(-1,m)*pow(2* (x), n-2*m)/(factorial(m)*factorial(n-2*m));
+        S += pow(-1,m)*pow(2* (x), n-2*m)/((double)(factorial(m)*factorial(n-2*m)));
     }
     return S*factorial(n);
 }
 
-double basis::psi_n(int n, double x, double a, double w ) {
-    return pow(m*w/(M_PI*hbar),0.25)*hermite(n,x*sqrt(a*w))*exp(-a*w*x*x/2.0)/sqrt(pow(2,n)*factorial(n));
+double basis::psi_n(int n, double x, double w ) {
+//    return pow(m*w/(M_PI*hbar),0.25)*hermite(n,x*sqrt(w))*exp(-0.5*w*x*x)/sqrt(pow(2,n)*factorial(n));
+    return hermite(n,x*sqrt(w))*exp(-0.5*w*x*x);
+//    return hermite(n,x*sqrt(w))*exp(-0.5*w*x*x);
 }
 
-double basis::psi(int nx,int ny, double x, double y, double a, double w){
+double basis::psi(int nx,int ny, double x, double y, double w){
     if (nx < 0 or ny <0)
         return 0;
-    return psi_n(nx, x, a, w) * psi_n(ny, y, a, w);
+    return psi_n(nx, x, w) * psi_n(ny, y, w);
 }
