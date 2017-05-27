@@ -12,8 +12,11 @@ using namespace arma;
 
 
 // definere globale variable fordi jeg ønsker det.
-int n = 2;
+int n = 20;
 int iterations = pow(2,12);
+double w = 0.1;
+
+
 basis B = basis(5);
 mat c = ones<mat>(n,n);
 
@@ -31,18 +34,18 @@ vec delD(mat invDplus, mat invDminus, int i, int spin, mat r, double a, double w
 vec delJastrow(int k, mat r, double b, mat c);
 mat D(mat r, int spin, double a, double w);
 double psiC(mat r, double b, mat c);
-double logpsiC(mat r, double b, mat c);
 
 
 int main(int nargs, char *args[])
 {
-    double w = 1;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j< n; j++) {
              if (i % 2 == j % 2)
                  c(i,j) = 1/3.;
         }
     }
+    //B.print();
+    //return 0;
     double a=0.8, b=0.2;
     if (w == 1) {
         switch(n) {
@@ -96,7 +99,6 @@ int main(int nargs, char *args[])
     int u = 0; int v = 0; int k;
     double wfpp = wf;
     double result = 0;
-    double logdet, logdetpp, logJastrow, logJastrowpp, logG;
 
     MPI_Init(&nargs, &args);
     int numprocs;
@@ -110,26 +112,25 @@ int main(int nargs, char *args[])
     }
     for (u = 0; u < iterations; u++) {
         k = rand_particle(gen);
-        Fpp = 2*delPsi(k,rpp,invDpluspp,invDminuspp,a,b,c,w);
+//        Fpp = 2*delPsi(k,rpp,invDpluspp,invDminuspp,a,b,c,w);
+
         r = rpp;
-//        r.col(k) = rpp.col(k) + randn<vec>(2)*sqrt(1./w);
-        r.col(k) = rpp.col(k) + d*Fpp*dt + randn<vec>(2)*sqrt(dt);
+        r.col(k) = rpp.col(k) + randn<vec>(2)*sqrt(1./w);
+//        r.col(k) = rpp.col(k) + d*Fpp*dt + randn<vec>(2)*sqrt(dt);
         Dplus  = D(r, 0, a, w);
         invDplus = inv(Dplus);
         Dminus = D(r, 1, a, w);
         invDminus = inv(Dminus);
-        F = 2*delPsi(k,r,invDplus,invDminus,a,b,c,w);
-        p = rpp.col(k) - r.col(k) - d*dt*F;
-        q = r.col(k) - rpp.col(k) - d*dt*Fpp;
-        logG = abs((dot(q,q) - dot(p,p))/(4*d*dt));
+//        F = 2*delPsi(k,r,invDplus,invDminus,a,b,c,w);
+//        p = rpp.col(k) - r.col(k) - d*dt*F;
+//        q = r.col(k) - rpp.col(k) - d*dt*Fpp;
+//        double Gyx = exp(- dot(p,p)/(4*d*dt));
+//        double Gxy = exp(- dot(q,q)/(4*d*dt));
         wf = det(Dplus)*det(Dminus)*psiC(r,b,c);
         // hasting-metropolis test
 //        if ( wf*wf*Gyx/(wfpp*wfpp*Gxy) > rand_double(gen) ) {
-        logdet = log( abs(det(Dplus) *det(Dminus) ) );
-        logJastrow = logpsiC(r,b,c);
-        if ( logG + 2*(logdet - logdetpp + logJastrow - logJastrowpp) > log(rand_double(gen)) ) {
-            rpp = r; wfpp = wf; Dpluspp = Dplus; Dminuspp = Dminus; invDpluspp = invDplus;
-            invDminuspp = invDminus; logdetpp = logdet; logJastrowpp = logJastrow;
+        if ( wf*wf/(wfpp*wfpp) > rand_double(gen) ) {
+            rpp = r; wfpp = wf; Dpluspp = Dplus; Dminuspp = Dminus; invDpluspp = invDplus; invDminuspp = invDminus;
             v++;
         }
 
@@ -247,17 +248,6 @@ double psiC(mat r, double b, mat c) {
         }
     }
     return exp(jastrow);
-}
-
-double logpsiC(mat r, double b, mat c) {
-    double jastrow = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i+1; j < n; j++) {
-            double rij = norm(r.col(i) - r.col(j));
-            jastrow += c(i,j)*rij/(1+b*rij);
-        }
-    }
-    return jastrow;
 }
 
 
