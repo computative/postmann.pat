@@ -1,10 +1,12 @@
 \documentclass[11pt,english,a4paper]{article}
 \usepackage{babel}
 \input{/home/marius/Dokumenter/preamples/phys_en.pre}
+\usepackage{lstautogobble}
+\usepackage{csquotes}
 \author{\normalsize Marius Jonsson \\\\
 \vspace{5px}
 \normalsize \texttt{http://github.com/kingoslo/postmann.pat}}
-\title{\bf \uppercase{Some title}}
+\title{\bf \uppercase{Proof of the blocking method}}
 \date{\normalsize \today}
 \addbibresource{/home/marius/Dokumenter/MyLibrary.bib}
 \DeclareUnicodeCharacter{2212}{$-$}
@@ -12,59 +14,155 @@
 \maketitle
 \begin{abstract} \normalsize This is a report submission for the first project of «Computational physics 2» at the Institute of Physics, University of Oslo, autumn 2016.\\
 \\
-We prove a stronger version of the blocking method than Flydbjerg and Pettersen claim. We prove that if $X_1,X_2,\cdots, X_m$ are $2^n$ identically distributed random variables with stationary non-negative covariances, $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denote their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then there exist a $k \in \mathbb{N}$ such that $k < \log_2 m$ and
+We implement a variational Monte-Carlo scheme using Hastings-Metropolis algorithm to compute observables for a quantum dot of interacting electrons. We develop the mathematics of the Blocking method and we eventually prove the blocking method that Flydbjerg and Pettersen claim in their 1989 paper. Specifically, we prove that if $X_1,X_2,\cdots, X_m$ are $2^n$ identically distributed random variables with stationary non-negative covariances, $\overline X_m = (1/m)\sum_{j=1}^m X_j$ denote their average and $X^{(j)}_i$ be a random variable subject to $j$ blocking transformations. Then there exist a $k \in \mathbb{N}$ such that $k < \log_2 m$ and
 \[
 \Var{\overline X_m} - \Var{X^{(k)}_i} < \frac{8}{m}\Var{X^{(k)}_i} \qquad \text{for all} \qquad 1 \leq i \leq 2^{-k}m.
 \]
+Next, we compute the trail energy of a Slater-Jastrow type trail wave function for theory of a harmonic oscillator with Couloumb repulsion. We also compute mean distance between electrons, their expected kinetic- and potential energy.
 \end{abstract}
-\lstset{
-  xleftmargin=.2\textwidth, xrightmargin=.2\textwidth
-}
-
 \section*{\uppercase{Introduction}}
-\[
-\psi_T(\vec{r}_1, \vec{r}_2) = C(\psi_0 \psi_C)(\vec{r}_1, \vec{r}_2), \quad  \psi_0(\vec{r}_1, \vec{r}_2) = \exp \left(-\frac{1}{2} \alpha  \omega  \left( {{r}_1}^2+  {{r}_2}^2\right)\right),  \quad  \psi_C(\vec{r}_1, \vec{r}_2) =  \exp \left( \frac{\gamma r_{  12}}{\beta  r_{  12}+1} \right)
-\]
-\[
-E_T = \sum_{i=1}^N \left[ -\frac{1}{2} \frac{\nabla^2_i \psi_T}{\psi_T} + \frac{1}{2} \omega^2 r_i^2 + \sum_{j=i+1}^N \frac{1}{r_{ij}} \right], \qquad \frac{\nabla_i^2 \psi_T}{\psi_T} = \frac{\nabla_i^2 \psi_0}{\psi_0} + \frac{\nabla_i^2 \psi_C}{\psi_C} + 2\frac{\nabla_i \psi_C}{\psi_C}\frac{\nabla_i \psi_0}{\psi_0}
-\]
-\[
-\frac{\nabla_i^2 \psi_0}{\psi_0} = \alpha^2 \omega^2 r_i^2 - 2 \alpha \omega, \qquad
-\frac{\nabla_i^2 \psi_C}{\psi_C} = \frac{\gamma (1 + r_{ij} \gamma - \beta^2 r_{  12}^2)}{r_{  12}(1 + \beta r_{  12})^4}, \qquad \sum_{i=1}^2 \frac{\nabla_i \psi_C}{\psi_C}\cdot \frac{\nabla_i \psi_0}{\psi_0} = - \frac{\alpha \omega \gamma r_{ij}}{(1 + \beta r_{12})^2}
-\]
-\[
-\frac{\nabla_i \psi_T}{\psi_T} = \vec{e}_1 \left( -\alpha \omega x_i + \frac{\gamma(x_i - x_j)}{(1 + \beta r_{ij})^2r_{ij}} \right) + \vec{e}_2 \left( - \alpha \omega y_i + \frac{\gamma(y_i-y_j)}{(1 + \beta r_{ij})^2r_{ij}} \right)
-\]
-\[
-\frac{\partial}{\partial \theta_j} \E{E}(\theta_1,\theta_2,\cdots \theta_n) = 2 \E{\frac{E}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} } - 2\E{\frac{1}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} }\E{E}
-\]
-\[
-\frac{1}{\psi_T}\pp \psi_T; \alpha; = - \frac{\omega}{2} \left( r_1^2 + r_2^2 \right) \qquad 
-\frac{1}{\psi_T}\pp \psi_T; \beta; = - \gamma \left( \frac{r_{12}}{1 + \beta r_{12}} \right)^2
-\]
-For more than two particles we generalize
-\[
-\nabla \phi_{  nx,ny} = \vec{e}_1 \left( 2n_x (\alpha \omega)^{1/2} \phi_{  nx-1,ny} - \alpha \omega x \phi_{  nx,ny} \right) + \vec{e}_2 \left( 2n_y(\alpha\omega)^{1/2} \phi_{  nx,ny-1} - \alpha \omega y \phi_{  nx,ny} \right)
-\]
-\begin{align*}
-\nabla^2 \phi_{  nx,ny} &= 4 \alpha \omega \left( n_x (n_x - 1)\phi_{  nx-2,ny} + n_y(n_y - 1)\phi_{  nx,ny-2} \right)  -4 (\alpha \omega)^{3/2} \left( x n_x\phi_{  nx-1,ny} + yn_y \phi_{  nx,ny-1} \right) \\
-&+ \alpha \omega \phi_{  nx,ny}\left( \alpha\omega r^2 - 2 \right)
-\end{align*}
-\[
-\frac{\nabla_k \psi_C}{\psi_C} = \sum_{  i=1, \ i \neq k}^n \frac{\gamma_{ik}}{(1 + \beta r_{ik})^2 r_{ik}} \Big( \vec e_1 (x_k -x_i) + \vec e_2 (y_k -y_i) \Big)
-\]
-\[
-\frac{\nabla_i^2 \psi_T}{\psi_T} = \frac{\nabla_i^2 |D|_\uparrow}{|D|_\uparrow} + \frac{\nabla_i^2 |D|_\downarrow}{|D|_\downarrow} + \frac{\nabla_i^2 \psi_C}{\psi_C} + 2 \left[ \frac{\nabla_i |D|_\uparrow}{|D|_\uparrow} + \frac{\nabla_i |D|_\downarrow}{|D|_\downarrow} \right] \cdot \frac{\nabla_i \psi_C }{ \psi_C }
-\]
-\[
-\frac{\nabla^2_k \psi_C}{\psi_C} = \left[ \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(x_k-x_j) }{(1 + \beta r_{kj})^2 r_{kj}} \right]^2 + \left[ \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(y_k-y_j) }{(1 + \beta r_{kj})^2 r_{kj}} \right]^2 + \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(1 - \beta r_{kj}) }{r_{kj} (1 + \beta r_{kj})^3}
-\]
+The implementation of a Variational Monte Carlo scheme using Hastings-Metropolis algorithm is a robust way of estimating observables if a proposal of the wave function $\psi_T$ exist. It's robustness, as we shall see is mainly due to that the properties and construction of stationary Markov chains are well understood. Their construction was first made made popular by 1953 paper (Equation of State Calculations by Fast Computing Machines 1953 ref). In the begining of 1971, Canadian statistican Wilfred Keith Hastings provided modern rigorous proof of what became the Hastings-Metropolis theorem, contained in the appendix. His proof was constructive, in the sense that it shows that any irreducible Markov chain generates a time reversible Markov chains, $\{X_i, i \in \mathbb{N}\}$, with stationary probability distribution $\psi_T$. Using $X_i$ we can compute any desired statistic, such as the distribution of the spectrum of the energy $E_i$. The application to quantum theory is a corollary of Chebyshev's inequality. It proves that $\E{E} = \lim_{m \to \infty} (1/m) \sum_{i=1}^m E_i$ with convergence in probability (referanse). That means the observations $E_i$ immediately represent estimates for any observable! In this project we will investigate the ground state of a quantum dot with $n\geq 2$ electrons. Assuming that $r_ij = |\vec{r}_i - \vec r_j|$ is the distance between electron $i$ and $j$, our theory is 
+\begin{equation}
+E_T = \sum_{i=1}^N \left[ -\frac{1}{2} \frac{\nabla^2_i \psi_T}{\psi_T} + \frac{1}{2} \omega^2 r_i^2 + \sum_{j=i+1}^N \frac{1}{r_{ij}} \right], \label{eq:ET}
+\end{equation}
+\begin{equation}
+\psi_T = C\psi_0 \psi_C, \quad  \psi_0(\vec{r}_1, \vec{r}_2) = \exp \left(-\frac{1}{2} \alpha  \omega  \left( {{r}_1}^2+  {{r}_2}^2\right)\right),  \quad  \psi_C(\vec{r}_1, \vec{r}_2) =  \exp \left( \frac{r_{  12}}{\beta  r_{  12}+1} \right). \label{eq:psiT}
+\end{equation}
+We will generalize $\psi_T$ for any natural number of electrons. We assume the parameters $\alpha,\beta$ are given. In our case they are not known, but will be fixed such that $\E{E(\alpha,\beta)}$ is a minima.\\
+\\
+Although that the variational Monte-Carlo scheme is invaluable to any physicist interested in computational physics, the highlights of this report are perhaps new contributions to the theory of the Blocking method. In the evaluation of the implementation of our variational Monte-Carlo scheme, we will use the Blocking method to compute the variance of the means of our statistics: $\Var{\overline{E}}$. In the results I develop the mathematics to contain 3 immediate lemmas of the work by Flyvbjerg and Petersen, and two propositions which combined imply the Blocking method.\\
+\\
 The report is structured by «introduction»-, «methods»-, «results and discussion»- and finally a «conclusion and perspectives»-sections.
 \section*{\uppercase{Methods}}
-$\varrho \varsigma \vartheta \varpi$
+This report assumes some previous knowledge of the Blocking method. These details have therefore been omitted from the methods section and been moved to the appendix. For the evaluation of this report, it is important, otherwise the methods section may appear unsatisfactory on first reading. An algebraic understanding is necessary since the report develops the mathematics of the Blocking method further. To readers unfamiliar of the blocking method, the appendix contain proof of auxiliary results which are simultaneous excellent introduction to the idea of the Blocking method itself. \\
+\\
+Let's first discuss the Hastings-Metropolis theorem. It's constructive proof is contained in the appendix. However, the Hastings-Metropolis method is easily made precise. Often whilst proving results about Markov chains we are interested in whether the Markov chain can reach every state from any other state. For the Hastings-Metropolis method, this is important because it ensures that all the divisions which are made in the proof are non-zero. Let's make this notion precise. Suppose $q_{  ij}$ is the transition probability matrix of a Markov chain $X_n$ and $S$ is the state space. We say that $X_n$ is \textit{\textbf{irreducible}} if for all $i,j \in S$ there exist an $n \in \mathbb{N}$ such that $(q^n)_{  ij}, (q^n)_{  ji} > 0$.\\
+\\
+Suppose that $X_n$ is irreducible and not deterministically periodic, then we say that the probabilities $\pi_i = P(X_n = i)$ is the \textit{\textbf{stationary distribution}} of $X_n$.\\
+\\
+We will say that $X_n$ is \textit{\textbf{time reversible}} if the conditional probability $P(X_{n} = j$, given that $X_{n+1} = i) = P_{  ij}$ for all $i,j \in S$ and $n \in \mathbb{N}$. Interestingly, it is easily shown that a Markov chain is time reversible if and only if $\pi_i P_{  ij} = \pi_j P_{  ji}$ for all $i,j \in S$. If you wish to prove this yourself, the proposition follows from Markov chain property and Bayes theorem. With these definitions, we can understand the Hastings-Metropolis theorem.
+\begin{theorem}[Hastings-Metropolis theorem]
+Suppose that $C\pi_i$ is a discrete probability distribution. If $q_{ij}$ is any irreducible transition probability matrix, and $X_n$ is a Markov chain with transition probability matrix 
+\begin{equation}
+P_{ij} = \ccases {
+\alpha_{  ij} q_{  ij} , \quad &j\neq i\\
+q_{  ii} + \sum_{k=0}^\infty q_{  ik}(1 - \alpha_{  ik})\quad & j=i
+},\qquad \text{where} \qquad \alpha_{  ij} = \min \left( \frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} , 1\right), \label{eq:metropolis}
+\end{equation}
+then $X_n$ is time reversible with stationary distribution $\pi_i$. \label{thm:metropolis}
+\end{theorem}
+This theorem makes the entire variational Monte-Carlo scheme well defined if we define $\pi_i$ and $q_{ij}$. We will take $\pi_i$ to equal $\psi_T$ and refer to the density $q_{ij}$ as \defn{importance sampling}. We will also present source code, and show that the code produces known benchmarks and tests to help us verify that the variational Monte-Carlo-code runs correctly.\\
+\\
+As we noted, theorem \ref{thm:metropolis} implies that the variational Monte-Carlo scheme is uniquely defined once we specify $\psi_T$ and the importance sampling. We will take the trail wave function to be of a Slater-Jastrow product. This is desirable since it exhibits the correct cusp behaviour for electrons with parallel and anti-parallel spin and it means that the variational parameters has simple physical interpretation. We will see that this produces ground state energy error smaller than 0.02\%. Specifically, we define
+\begin{align}
+\psi_T(\vec{r}_1, \vec{r}_2, \cdots, \vec{r}_n; \alpha,\beta) &= \det(D_\uparrow)\det(D_\downarrow)\psi_C, \qquad \psi_C = \exp\left( \sum_{i=1}^n\sum_{j=i+1}^n \frac{\gamma_{ij} r_{ij}}{1 + \beta  r_{ij}} \right)\\
+\text{such that}& \qquad  (D_\uparrow)_{  ij} = \phi_{2j}(\vec{r}_{2i}), \quad (D_\downarrow)_{  ij} = \phi_{2j+1}(\vec{r}_{2i + 1}) \quad i,j \in \{0,1,\cdots,\frac{n}{2}-1\} \nonumber \\
+\text{and}& \qquad \phi_{j}(\vec{r}_i) = H_{n_{xj}}\big( (\alpha \omega)^{1/2} x_i\big) H_{n_{yj}}\big( (\alpha \omega)^{1/2} y_i\big) \exp \left( - \frac{1}{2}\alpha \omega r_i^2 \right)
+\end{align}
+\begin{center}
+\begin{tabular}{r |c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c c}
+$j$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & $\cdots$ \\
+\hline
+$n_{xj}$& 0 & 0 & 1 & 1 & 0 & 0 & 2 & 2 & 1 & 1 & 0 & 0 & $\cdots$  \\
+$n_{yj}$& 0 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 1 & 2 & 2 & $\cdots$ \\
+Spin & $\uparrow$ & $\downarrow$& $\uparrow$ & $\downarrow$& $\uparrow$ & $\downarrow$& $\uparrow$ & $\downarrow$& $\uparrow$ & $\downarrow$& $\uparrow$ & $\downarrow$& $\cdots$ 
+\end{tabular} \qquad for all $i \in \{0,1,2,\cdots n-1\}$.
+\end{center}
+It remains to define the importance sampling. The generating Markov chain with probability density $q_{ij}$ will be taken to be a stationary isotropic diffusion process. We have seen in lectures that it is immediate from the Fokker-Planck equation that if $r^{(i)}_k,r^{(j)}_k$ represent two different position of particle number $k$ and $\Delta t > 0$ is a parameter, then such a process must satisfy
+\[
+q_{ij} = G(\vec{r}_k^{(i)},\vec{r}_k^{(j)}; \Delta t) = \frac{1}{(2 \pi \Delta t )^{1/2}} \exp \left( - \frac{(\vec{r}_k^{(j)} - \vec{r}_k^{(j)} - \Delta t (\nabla \psi_T/\psi_T) )^2}{2\Delta t} \right), \quad \text{for all $k \in \{1,2,\cdots,n\}$}
+\]
+Which is nothing but the multinomial normal probability distribution with mean mean $\Delta t \nabla\psi_T / \psi_T$ and variance $\Delta t$ (ref). That means if $\xi \sim \mathrm{N}(0,1)$ is some standard normal random variable we can write
+\[
+\vec{r}_k^{(j)} = \vec{r}_k^{(i)} + \frac{1}{2} \frac{\nabla \psi_T}{\psi_T} + \xi(\Delta t)^{1/2}. \qquad \text{\parencite[338]{degroot_probability_2012} }
+\]
+These expressions suffices to fix the implementation of importance sampling, as we shall see in practical example at the end of this section. As announced we want to estimate the value of the variational parameters $\alpha$ and $\beta$. The simplest implementation is possibly the steepest decent method.\\
+\\
+Suppose $f:\mathbb{R}^n \to \mathbb{R}$ is a function, then \cite[515]{press_numerical_2007} characterises the steepest decent method as a \textit{not-very-good method} that works by «Start at a point $\vec r^{(0)}$. As many times as needed, move from $\vec r^{(i)}$ to $\vec{r}^{(i+1)}$ minimizing along the line from $\vec r^{(i)}$ in the direction of the local downhill gradient $-\nabla f(\vec{r}^{(i)})$.». This means that given $\vec{r}^{(0)}$ we can iterate by
+\begin{equation}
+\vec{r}^{(i+1)} = \vec{r}^{(i)} - \gamma_i \nabla f(\vec{r}^{(i)}) \qquad \text{for all $i \in \mathbb{N}$ \qquad \parencite{hazewinkel_gradient_1989}} \label{eq:decent}
+\end{equation}
+In order to ensure convergence one has to find a sequence $\{\gamma_i\}_{i=1}^\infty$ that ensures convergence. Ideally such that $f(\vec{r}^{(i)} - \gamma_i \nabla f(\vec{r}^{(i)}))$ is maximised for all $i \in \mathbb{N}$ \parencite{hazewinkel_gradient_1989}. However for this implementation, automation was not carried out. As we explain in the introduction, we define $\alpha$ and $\beta$ such that they minimize the energy \ref{eq:ET}. By the defining equation \eqref{eq:decent} we therefore need to calculate $\nabla \E{E}$. By using the definition of expected value and pulling the derivative into the integral, we discover that for any variational parameter $\theta$
+\[
+\pp \E{E};\theta; = 2 \left[ \E{\frac{E}{\psi_T} \pp \psi_T;\theta;} - \E{E} \E{\frac{1}{\psi_T} \pp \psi_T ; \theta; }  \right]
+\]
+Using this equation we express $\nabla \E{E}$ by the derivatives of the wave function. And estimate all the relevant expectation values by the mean. But we know how to differentiate, so this follows easily after one step of Jacobi's formula. See appendix for details of the derivation and the resulting equations.\\
+\\
+Let's talk about how the variational Monte-Carlo scheme was implemented in \texttt{C++}. For brevity, lets show explicitly how this is implemented for two particles, then talk about additional complexity induced by multiple particles. We have an analytical expression for $\psi_T$ from equation \eqref{eq:psiT} and expression of all the observables we want to sample. For the most elementary implementation we will only sample the energy. Details of the derivation are found in the appendix, for anyone following the derivation \eqref{eq:ET} once it is evaluated for two particles is
+\[
+E_T = \frac{1}{r_{12}} + \frac{1}{2}\omega^2(1-\alpha^2)( r_1^2 + r_2^2 )
+            + 2\alpha\omega + \frac{\alpha\omega r_{12}}{(1 + \beta r_{12})^2} - \frac{(1+r_{12}-\beta^2r_{12}^2)}{ r_{12}(1 + r_{12}\beta)^4 }
+\]
+If we let \texttt{m}, denote the number of Monte-Carlo cycles, \texttt{r} and \texttt{rpp} denote the new and old position matrices for the two particles then a simple program using importance sampling for two particles is quickly built using the \texttt{Armadillo} library by\\
+\begin{table}
+\begin{lstlisting}
+for (int i = 0; i < m; i++) {
+    // selecting particle to move from uniform distribution
+    int k = rand_particle(gen);
+    int not_k = (k+1) % 2;
+    
+    // computing qij and qji
+    rijpp = norm(rpp.col(0)-rpp.col(1));
+    vec Fpp = -2*a*w*rpp.col(k) + 2*c*(rpp.col(k) - rpp.col(not_k))/( (1 + b*rijpp)*(1 + b*rijpp)*rijpp );
+    r.col(k) = rpp.col(k) + D*Fpp*dt + randn<vec>(2)*sqrt(dt);
+    rij = norm(r.col(0)-r.col(1));
+    F    = -2*a*w*r.col(k) + 2*c*(r.col(k) - r.col(not_k))/( (1 + b*rij)*(1 + b*rij)*rij );
+    vec p = rpp.col(k) - r.col(k) - D*dt*F; 
+    vec q = r.col(k) - rpp.col(k) - D*dt*Fpp;
+    double qji = exp(- dot(p,p)/(4*D*dt)); 
+    double qij = exp(- dot(q,q)/(4*D*dt));
+    
+    // computing new state function
+    wf = exp(-0.5*a*w*( dot(r.col(0),r.col(0)) + dot(r.col(1),r.col(1)) ) + r12/(1 + b*r12) );
+	
+    // one iteration of Hastings-Metropolis theorem
+    if ( wf*wf*qji/(wfpp*wfpp*qij ) > rand_double(gen) ) {
+        rpp = r; wfpp = wf; rij = norm(r.col(0) - r.col(1) );
+    }
+    
+    // sample energy
+    double e = 1/rij + 0.5*w*w*(1-a*a)*( dot(rpp.col(0),rpp.col(0)) + dot(rpp.col(1),rpp.col(1)) )
+            + 2*a*w + a*w*c*rij/pow(1 + rij*b,2) - c*(1+rij*c-b*b*rij*rij)/( rij*pow(1 + rij*b,4) );
+    E += e/iterations;
+}
+\end{lstlisting}
+\caption{Program for Hastings-Metropolis-style implementation of a quantum dot of two electrons. The variables \texttt{r}, \texttt{rpp} contain the positions at sequential steps, \texttt{F}, \texttt{Fpp} contain the quantity $\nabla \psi_T/\psi_T$ for sequential steps and \texttt{rij}, \texttt{rijpp} contain the distance between electrons at sequential steps. The program returns the energy with uncertainty in the variance of $\Var{\overline{E_T}} = 10^{-10}$ and rejection ratio $r < 10^{-4}$.}
+\end{table}
+Interestingly, the program returns that the energy is $\E{E_T} = 3.00052\pm 10^{-5}$ after only $2^{20} \approx 10^6$ Monte-Carlo cycles. For reference, the exact result is 3.\\
+\\
+We want to generalize the program to more than two electrons, $n>2$. This adds the complication of adding a Slater determinant. First, the analytical expression of the energy becomes large. This is chiefly due to the dependence of $\alpha$ in the functions $\phi_{ij}$ in the slater determinant and their complicated interactions. Therefore $\nabla^2 psi_T(\psi_T$ becomes a complicated expression. Note first that for the trail state function we specified
+ \[
+\frac{\nabla_i^2 \psi_T}{\psi_T} = \frac{\nabla_i^2 \det D_\uparrow}{\det D_\uparrow} + \frac{\nabla_i^2 \det D_\downarrow}{\det D_\downarrow} + \frac{\nabla_i^2 \psi_C}{\psi_C} + 2\left( \frac{\nabla_i \det D_\uparrow}{\det D_\uparrow} + \frac{\nabla_i \det D_\downarrow}{\det D_\downarrow} \right) \cdot \frac{\nabla_i \psi_C}{\psi_C}
+\]
+We wrote functions which evaluated each of these terms by first differentiating each term using pen and paper. The exact details of these differentiations are of little interest to post-calculus-students, and relegate these to the appendix for your reference. Suppose $X \sim \mathrm{unif}(0,1)$ is a uniformly continuously distributed random variable on $(0,1]$, another complication which arises in the implementation of many particles if evaluation of the inequality 
+\begin{equation}
+X < \frac{\pi_jq_{ji}}{\pi_i q_{ij}} = \frac{q_{ji}}{q_{ij}} \left( \frac{\det(D_\uparrow D_\downarrow)_j }{\det(D_\uparrow D_\downarrow)_i} \frac{(\psi_C)_j}{(\psi_C)_i} \right)^2 \label{eq:ineq}
+\end{equation}
+The trouble is that due to the exponentials inside the Jastrow factor, these terms will become unpractically large and overflow. The path taken in the implementation of this project was the following. Suppose $f(x)$ is some monotonous $\mathbb{R} \to \mathbb{R}$-function. Since $f$ is monotonous, that means $x < y$ if and only if $f(x) < f(y)$. Since the natural logarithm $\log$ is monotonous we can take $x = X$, and $y$ equal the right hand side of inequality \eqref{eq:ineq}. Hence inequality \eqref{eq:ineq} is true if and only if 
+\[
+\log(X) < \log q_{ji} - \log q_{ij} + 2\big(\log( \det(D_\uparrow D_\downarrow)_j) - \log( \det(D_\uparrow D_\downarrow)_i) + \log (\psi_C)_j - \log (\psi_C)_i \big)
+\]
+Since $X > 0$ the logarithm and exponential are reverse functions for the terms in question, and hence the evaluation of the Jastrow factors are reduced to magnitude smaller than about 1000. There were no other technical complications worth mentioning. Expressions to implement the Steepest decent method are also contained in the appendix.\\
+\\
+Care was taken to check that the program ran correctly. 
+- Benchmarks numerical or closed form.
+- Multiple electrons were backward compatibly checked:
++ after implementation we checked that in the case $n=2$ the numerical formula individually reduced to the closed form expressions. Nevn alle termene i laplacian. Nevn at dette også ble gjort for steepest decent.
 \section*{\uppercase{Results and discussion}}
 
-Next we want to prove the blocking method. The paper by Flyvbjerg and Petersen (ref) gives an excellent introduction for applications. Mathematically interested readers may be affronted by the paper because the paper does not contain proof of the method. The paper falsely claims that the blocking transformations has a fixed point and that conditions can be put on $\gamma_t$ such that repeated blockings ensure the $gamma_t$s wind up at $C\delta_{t0}$. This is false because the blocking transformations are not a linear operator (ref), and therefore $T$ cannot have a fixed point (ref) moreover. Since there is no fixed point, there is no basin of attraction (ref). We will however prove the blocking method, and study its properties, such as convergence rate and compute the error induced by the algorithm and present sufficient conditions such that the method is stable and converges. To my knowledge, this has never been done for the blocking method. As you will see, the method is suitable for estimation of the variance of random variables.
+I Present your results
+I Give a critical discussion of your work and place it in the
+correct context.
+I Relate your work to other calculations/studies
+I An eventual reader should be able to reproduce your
+calculations if she/he wants to do so. All input variables
+should be properly explained.
+I Make sure that figures and tables should contain enough
+information in their captions, axis labels etc so that an
+eventual reader can gain a first impression of your work by
+studying figures and tables only.
+
+Next we want to prove the blocking method. The paper by Flyvbjerg and Petersen gives an excellent introduction for applications \parencite[461-466]{flyvbjerg_error_1989}. Mathematically interested readers may be affronted by the paper because the paper does not contain proof of the method. The paper falsely claims that the blocking transformations has a fixed point and that conditions can be put on $\gamma_t$ such that repeated blockings ensure the $gamma_t$s wind up at $C\delta_{t0}$. This is false because the blocking transformations are not a linear operator (ref), and therefore $T$ cannot have a fixed point (ref) moreover. Since there is no fixed point, there is no basin of attraction (ref). We will however prove the blocking method, and study its properties, such as convergence rate and compute the error induced by the algorithm and present sufficient conditions such that the method is stable and converges. To my knowledge, this has never been done for the blocking method. As you will see, the method is suitable for estimation of the variance of random variables.
 \\
 \\
 Suppose $\overline X_m$ is the mean of $m$ random variables and you want to compute $\Var{\overline X_m}$. The blocking method is a way of quickly computing $\Var{\overline X_m}$, and is implemented as follows: Start by taking the average of every two sequential random variables from a time-series. That means that we obtain $m/2$ new random variables. If we keep on repeating this process we will obtain $m/2^k$ random variables after $k$ repetitions. We will call this a blocking transformation. It turns out that under certain conditions, there is some $k$, such that after $k$ blocking transformations, the variance of the blocked variables are essentially the same as $\Var{\overline X_m}$. Let's make this precise.\\
@@ -87,7 +185,7 @@ and
 \end{equation}
 \end{prop}
 \begin{proof}
-See Flydbjerg and Petersen. A proof is also containted in the appendix.
+See \cite{flyvbjerg_error_1989}. A proof is also containted in the appendix.
 \end{proof}
 
 \begin{lemma} Suppose $m = 2^l$ denotes the number of observations and $k$ denote the number of blocking transformations. Then
@@ -119,6 +217,7 @@ Suppose $\varepsilon_k$ denotes the error after $k$ blocking iterations. Let $\{
 \begin{equation}
 \varepsilon_k - \varepsilon_{  k+1} = \frac{(\gamma_k)_1 }{n^{(k)}} \label{eq:rate}
 \end{equation}
+\label{prop:diff}
 \begin{proof}
 %Vis at den er decreasing.\\
 %\\
@@ -197,7 +296,7 @@ By using that $2^{-2} 2^{-2k} = 2^{-2(k+1)}$ and factoring $\gamma_{0,K}$ togeth
 Suppose $\vec{\upgamma}_k = \big((\gamma_k)_0 , (\gamma_k)_1, \cdots, (\gamma_k)_{n_k}\big)$ denote the vector of correlation structure at blocking iteration number $k$. Suppose $m \geq 2^{k+1} - 1$, then $k < \log_2 m$ and,
 \[
 2^{  2k}(\gamma_k)_1 = (\gamma_0)_1 + 2(\gamma_0)_2 + 3 (\gamma_0)_3 + \cdots +2^k(\gamma_0)_{2^k} + (2^k-1)(\gamma_0)_{2^k+1} + \cdots + (\gamma_0)_{2^{k+1}-1}
-\]
+\] \label{prop:sequence}
 \end{prop}
 \begin{proof}
 Use the previous lemma with $j=1$.
@@ -236,13 +335,85 @@ Moreover $S^2 = bla bla$ is an unbiased estimator of $\Var{\overline X_m}$. Bla 
 
 This theorem says that after less than $\log_2 m$ blocking iterations, the difference between the variance of the mean and variance of the blocked variables, is essentially zero. This is the case since $m$ is typically many orders of magnitude larger than $\Var{X^{(k)}_i}$.
 \section*{\uppercase{Conclusion and perspectives}}
+Our main finding are propositions \ref{prop:diff} and \ref{prop:sequence}. Together they imply the Blocking method. Here there are many prospects for further work. For example, combining the two propositions, we have all the information about the convergence up to a scalar factor which possibly is easy to determine using some kind of boundary- or initial condition. That would mean that one could go ahead a plot the convergence graph, and probably find a formula for the optimum stopping point of the algorithm. In order to realize automation of the algorithm Flyvbjerg and Petersen explicitly state that they wish for such formulas in their 1989 paper.\\
+\\
+Snakk om Fysikkresultatene. Drøft om det er pass for forbedringer av programmet.
+I State your main findings and interpretations
+I Try as far as possible to present perspectives for future work
+I Try to discuss the pros and cons of the methods and possible
+improvements
 \section*{\uppercase{Appendix}}
+\subsubsection*{\uppercase{analytical expressions}}
+Definition of trail energy
+\begin{equation}
+E_T = \sum_{i=1}^N \left[ -\frac{1}{2} \frac{\nabla^2_i \psi_T}{\psi_T} + \frac{1}{2} \omega^2 r_i^2 + \sum_{j=i+1}^N \frac{1}{r_{ij}} \right]
+\end{equation}
+Chain rule on smooth $m-$manifolds
+\[
+ \qquad \frac{\nabla_i^2 \psi_T}{\psi_T} = \frac{\nabla_i^2 \psi_0}{\psi_0} + \frac{\nabla_i^2 \psi_C}{\psi_C} + 2\frac{\nabla_i \psi_C}{\psi_C}\frac{\nabla_i \psi_0}{\psi_0}
+\]
+Expressions to determine energy in the case $n=2$:
+\[
+\psi_T(\vec{r}_1, \vec{r}_2) = C(\psi_0 \psi_C)(\vec{r}_1, \vec{r}_2), \quad  \psi_0(\vec{r}_1, \vec{r}_2) = \exp \left(-\frac{1}{2} \alpha  \omega  \left( {{r}_1}^2+  {{r}_2}^2\right)\right),  \quad  \psi_C(\vec{r}_1, \vec{r}_2) =  \exp \left( \frac{\gamma r_{  12}}{\beta  r_{  12}+1} \right)
+\]
+\[
+\frac{\nabla_i^2 \psi_0}{\psi_0} = \alpha^2 \omega^2 r_i^2 - 2 \alpha \omega, \qquad
+\frac{\nabla_i^2 \psi_C}{\psi_C} = \frac{\gamma (1 + r_{ij} \gamma - \beta^2 r_{  12}^2)}{r_{  12}(1 + \beta r_{  12})^4}, \qquad \sum_{i=1}^2 \frac{\nabla_i \psi_C}{\psi_C}\cdot \frac{\nabla_i \psi_0}{\psi_0} = - \frac{\alpha \omega \gamma r_{ij}}{(1 + \beta r_{12})^2}
+\]
+\[
+\frac{\nabla_i \psi_T}{\psi_T} = \vec{e}_1 \left( -\alpha \omega x_i + \frac{\gamma(x_i - x_j)}{(1 + \beta r_{ij})^2r_{ij}} \right) + \vec{e}_2 \left( - \alpha \omega y_i + \frac{\gamma(y_i-y_j)}{(1 + \beta r_{ij})^2r_{ij}} \right)
+\]
+Auxiliary expressions for steepest decent method in the case $n=2$:
+\[
+\frac{\partial}{\partial \theta_j} \E{E}(\theta_1,\theta_2,\cdots \theta_n) = 2 \E{\frac{E}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} } - 2\E{\frac{1}{\psi_T} \frac{\partial \psi_T}{\partial \theta_j} }\E{E}
+\]
+\[
+\frac{1}{\psi_T}\pp \psi_T; \alpha; = - \frac{\omega}{2} \left( r_1^2 + r_2^2 \right) \qquad 
+\frac{1}{\psi_T}\pp \psi_T; \beta; = - \gamma \left( \frac{r_{12}}{1 + \beta r_{12}} \right)^2
+\]
+For more than two particles the derivatives of the trail state function are
+\[
+\frac{\nabla_i \psi_T}{\psi_T} = \frac{\nabla_i \det D_\uparrow}{\det D_\uparrow} + \frac{\nabla_i \det D_\downarrow}{\det D_\downarrow} + \frac{\nabla_i \psi_C}{\psi_C}
+\]
+\[
+\frac{\nabla_i^2 \psi_T}{\psi_T} = \frac{\nabla_i^2 \det D_\uparrow}{\det D_\uparrow} + \frac{\nabla_i^2 \det D_\downarrow}{\det D_\downarrow} + \frac{\nabla_i^2 \psi_C}{\psi_C} + 2\left( \frac{\nabla_i \det D_\uparrow}{\det D_\uparrow} + \frac{\nabla_i \det D_\downarrow}{\det D_\downarrow} \right) \cdot \frac{\nabla_i \psi_C}{\psi_C}
+\]
+Derivatives of determinants
+\[
+\frac{\nabla_i \det D_\uparrow}{\det D_\uparrow} = \sum_{i = 0}^{n/2-1} (D_\uparrow^{-1})_{ji} \nabla_i \phi_{j}(\vec{r}_i), \quad \frac{\nabla_i^2 \det D_\uparrow}{\det D_\uparrow} = \sum_{i = 0}^{n/2-1} (D_\uparrow^{-1})_{ji} \nabla_i^2 \phi_{j}(\vec{r}_i); \quad \text{for $D_\downarrow$ replace $\uparrow$ by $\downarrow$}
+\]
+\[
+\nabla \phi_{  nx,ny} = \vec{e}_1 \left( 2n_x (\alpha \omega)^{1/2} \phi_{  nx-1,ny} - \alpha \omega x \phi_{  nx,ny} \right) + \vec{e}_2 \left( 2n_y(\alpha\omega)^{1/2} \phi_{  nx,ny-1} - \alpha \omega y \phi_{  nx,ny} \right)
+\]
+\begin{align*}
+\nabla^2 \phi_{  nx,ny} &= 4 \alpha \omega \left( n_x (n_x - 1)\phi_{  nx-2,ny} + n_y(n_y - 1)\phi_{  nx,ny-2} \right)  -4 (\alpha \omega)^{3/2} \left( x n_x\phi_{  nx-1,ny} + yn_y \phi_{  nx,ny-1} \right) \\
+&+ \alpha \omega \phi_{  nx,ny}\left( \alpha\omega r^2 - 2 \right)
+\end{align*}
+Derivatives of the Jastrow factors are
+\[
+\frac{\nabla_k \psi_C}{\psi_C} = \sum_{  i=1, \ i \neq k}^n \frac{\gamma_{ik}}{(1 + \beta r_{ik})^2 r_{ik}} \Big( \vec e_1 (x_k -x_i) + \vec e_2 (y_k -y_i) \Big)
+\]
+\[
+\frac{\nabla^2_k \psi_C}{\psi_C} = \left[ \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(x_k-x_j) }{(1 + \beta r_{kj})^2 r_{kj}} \right]^2 + \left[ \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(y_k-y_j) }{(1 + \beta r_{kj})^2 r_{kj}} \right]^2 + \sum_{j=1, j \neq k}^n \frac{\gamma_{kj}(1 - \beta r_{kj}) }{r_{kj} (1 + \beta r_{kj})^3}
+\]
+Auxiliary expressions for the steepest decent method are
+\[
+\frac{1}{\psi_T}\frac{\partial\psi_T}{\partial \alpha} = \frac{1}{\det D_\uparrow}\frac{\partial \det D_\uparrow}{\partial \alpha} + \frac{1}{\det D_\downarrow}\frac{\partial \det D_\downarrow}{\partial \alpha}, \qquad \frac{1}{\psi_T}\frac{\partial\psi_T}{\partial \beta} = - \sum_{i=1}^n\sum_{j=i+1}^n \gamma_{ij} \left( \frac{r_{ij}}{1 + \beta r_{ij}} \right)^2
+\]
+\[
+\frac{1}{\det D_\uparrow}\frac{\partial \det D_\uparrow}{\partial \alpha} = \sum_{i=0}^{n/2-1}\sum_{j=0}^{n/2-1} d^{-1}_{ij} \frac{\partial \phi_{2i}}{\partial \alpha} (\vec{r}_{2j}), \quad \frac{1}{\det D_\downarrow}\frac{\partial \det D_\downarrow}{\partial \alpha} = \sum_{i=0}^{n/2-1}\sum_{j=0}^{n/2-1} d^{-1}_{ij} \frac{\partial \phi_{2i+1}}{\partial \alpha}(\vec{r}_{2j+1} )
+\]
+\[
+\frac{\partial}{\partial \alpha} \phi_{i} (\vec{r}_j) = \left( x_j n_{xi} \phi_{n_{xi}-1,n_{yi}} (\vec{r}_j) + y_j n_{yi} \phi_{n_{xi},n_{yi}-1} (\vec{r}_j) \right)\left( \frac{\omega}{\alpha} \right)^{1/2} - \frac{1}{2}\omega r_j^2 \phi_{n_{xi},n_{yi}} (\vec{r}_j)
+\]
+\subsubsection*{\uppercase{Proofs}}
+
 In this section we will prove the Hastings-Metropolis theorem. Often whilst proving results about Markov chains we are interested in whether the Markov chain can reach every state from any other state. In the following proof this is important because it ensures that all the divisions we will make are non-zero. Let's make this notion precise. Suppose $q_{  ij}$ is the transition probability matrix of a Markov chain $X_n$ and $S$ is the state space. We say that $X_n$ is \textit{\textbf{irreducible}} if for all $i,j \in S$ there exist an $n \in \mathbb{N}$ such that $(q^n)_{  ij}, (q^n)_{  ji} > 0$.\\
 \\
 Suppose that $X_n$ is irreducible and not deterministically periodic, then we say that the probabilities $\pi_i = P(X_n = i)$ is the \textit{\textbf{stationary distribution}} of $X_n$.\\
 \\
 We will say that $X_n$ is \textit{\textbf{time reversible}} if the conditional probability $P(X_{n} = j$, given that $X_{n+1} = i) = P_{  ij}$ for all $i,j \in S$ and $n \in \mathbb{N}$. Interestingly, it is easily shown that a Markov chain is time reversible if and only if $\pi_i P_{  ij} = \pi_j P_{  ji}$ for all $i,j \in S$. If you wish to prove this yourself, the proposition follows from Markov chain property and Bayes theorem. With these definitions, we are ready for the main result.
-\begin{theorem*}[Hastings-Metropolis theorem]
+\begin{theorem}[Hastings-Metropolis theorem]
 Suppose that $C\pi_i$ is a discrete probability distribution. If $q_{ij}$ is any irreducible transition probability matrix, and $X_n$ is a Markov chain with transition probability matrix 
 \begin{equation}
 P_{ij} = \ccases {
@@ -250,8 +421,8 @@ P_{ij} = \ccases {
 q_{  ii} + \sum_{k=0}^\infty q_{  ik}(1 - \alpha_{  ik})\quad & j=i
 },\qquad \text{where} \qquad \alpha_{  ij} = \min \left( \frac{\pi_j q_{  ji}}{\pi_i q_{  ij}} , 1\right), \label{eq:metropolis}
 \end{equation}
-then $X_n$ is time reversible with stationary distribution $\pi_i$.
-\end{theorem*}
+then $X_n$ is time reversible with stationary distribution $\pi_i$. \label{thm:metropolis}
+\end{theorem}
 \begin{proof}
 Assume that the hypothesis is true. Then in particular $q_{  ij} \neq 0$ for all $i,j$ since $q$ is irreducible. Notice that if 
 \[
@@ -282,7 +453,7 @@ Suppose $X_1,\cdots, X_m$ are $m = 2^l$ identically distributed random variables
 \varepsilon_k = \Var{\overline X_m} - \Var{X^{(k)}_i} = 2^{k+1} \sum_{t=1}^{2^{-k}m-1} \left( 1 - \frac{2^{k}t}{m} \right) \frac{(\gamma_k)_t}{m}
 \]
 \end{prop*}
-This is not a new result. This was shown by ffFlydbjerg og company. The proof is however containted in the appendix for completness.
+This is not a new result. The proof is however containted in the appendix for completness.
 \begin{proof}
 Define the mean $\overline X_n = (1/n)\sum_{k=1}^n X_n$. Let's compute the variance of $\overline X_n$. Write
 \begin{equation}
@@ -297,7 +468,7 @@ Since the observations are identically distributed the covariances satisfy $\Sig
 \[
 \Var{ \overline X_n } \stackrel{ \eqref{eq:VarXn2} }{=} \frac{1}{n} \Big( \sigma^2 + 2\sum_{i=1}^n\sum_{j= i+1}^n \frac{1}{n}\Sigma_{ij} \Big) = \frac{1}{n} \Big( \sigma^2 + 2\sum_{t=1}^{n-1}\sum_{j= i+1}^n \frac{1}{n}\Sigma_{ij} \Big)
 \]
- Let's rewrite the last term. As you've seen, the sum is over the upper triangular (without the diagonal) elements of $\Sigma$. 
+ Let's rewrite the last term. As you've seen, the sum is over the upper triangular (without the diagonal) elements of $\Sigma$, and arrive at the desired expression.
 \end{proof}
 \begin{lemma*}
 Suppose $X$ and $Y$ are random variables with finite variance, then

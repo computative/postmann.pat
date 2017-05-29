@@ -5,7 +5,8 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     energy.cpp \
-    basis.cpp
+    basis.cpp \
+    test.cpp
 QMAKE_CXXFLAGS += -fopenmp
 LIBS += -fopenmp
 LIBS += -larmadillo -llapack -lblas

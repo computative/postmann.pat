@@ -10,11 +10,11 @@ MAKEFILE      = Makefile
 
 ####### Compiler, tools and options
 
-CC            = gcc
-CXX           = g++
+CC            = mpicc
+CXX           = mpicxx
 DEFINES       = -DQT_QML_DEBUG
-CFLAGS        = -pipe -g -Wall -W -fPIC $(DEFINES)
-CXXFLAGS      = -pipe -fopenmp -g -std=gnu++11 -Wall -W -fPIC $(DEFINES)
+CFLAGS        = -pipe -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include -I/usr/lib/x86_64-linux-gnu/openmpi/include -pthread -g -Wall -W -fPIC $(DEFINES)
+CXXFLAGS      = -pipe -fopenmp -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi/opal/mca/event/libevent2022/libevent/include -I/usr/lib/x86_64-linux-gnu/openmpi/include -pthread -DMPICH_IGNORE_CXX_SEEK -g -std=gnu++11 -Wall -W -fPIC $(DEFINES)
 INCPATH       = -I../mons -I. -I/home/marius/Qt/5.7/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/marius/Qt/5.7/gcc_64/bin/qmake
 DEL_FILE      = rm -f
@@ -34,8 +34,8 @@ TAR           = tar -cf
 COMPRESS      = gzip -9f
 DISTNAME      = mons1.0.0
 DISTDIR = /home/marius/Dokumenter/fys4411/postmann.pat/code/build-mons-Desktop_Qt_5_7_0_GCC_64bit-Debug/.tmp/mons1.0.0
-LINK          = g++
-LFLAGS        = 
+LINK          = mpicxx
+LFLAGS        = -pthread -L/usr//lib -L/usr/lib/x86_64-linux-gnu/openmpi/lib -lmpi_cxx -lmpi
 LIBS          = $(SUBLIBS) -fopenmp -larmadillo -llapack -lblas 
 AR            = ar cqs
 RANLIB        = 
@@ -48,8 +48,12 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../mons/main.cpp 
-OBJECTS       = main.o
+SOURCES       = ../mons/main.cpp \
+		../mons/energy.cpp \
+		../mons/basis.cpp 
+OBJECTS       = main.o \
+		energy.o \
+		basis.o
 DIST          = /home/marius/Qt/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/common/unix.conf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/common/linux.conf \
@@ -195,7 +199,10 @@ DIST          = /home/marius/Qt/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/exceptions.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/yacc.prf \
 		/home/marius/Qt/5.7/gcc_64/mkspecs/features/lex.prf \
-		../mons/mons.pro  ../mons/main.cpp
+		../mons/mons.pro basis.h \
+		maths.h ../mons/main.cpp \
+		../mons/energy.cpp \
+		../mons/basis.cpp
 QMAKE_TARGET  = mons
 DESTDIR       = 
 TARGET        = mons
@@ -543,8 +550,16 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../mons/main.cpp 
+main.o: ../mons/main.cpp ../mons/basis.h \
+		../mons/maths.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../mons/main.cpp
+
+energy.o: ../mons/energy.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o energy.o ../mons/energy.cpp
+
+basis.o: ../mons/basis.cpp ../mons/basis.h \
+		../mons/maths.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o basis.o ../mons/basis.cpp
 
 ####### Install
 

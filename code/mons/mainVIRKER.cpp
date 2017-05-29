@@ -12,11 +12,16 @@ using namespace arma;
 
 
 // definere globale variable fordi jeg ønsker det.
+int n = 2;
+int iterations = pow(2,12);
 basis B = basis(5);
-int n;
+mat c = ones<mat>(n,n);
 
 random_device rd;
 mt19937 gen(rd());
+uniform_int_distribution<int> rand_particle(0, n-1);
+uniform_int_distribution<int> rand_bool(0, 1);
+uniform_real_distribution<double> rand_double(0.0,1.0);
 
 double laplacePsi(int i, mat r, mat invDplus, mat invDminus, double a, double b, mat c, double w);
 double laplaceD(mat invDplus, mat invDminus, int i, int spin, mat r, double a, double w);
@@ -25,79 +30,49 @@ vec delPsi(int i, mat r, mat invDplus, mat invDminus, double a, double b, mat c,
 vec delD(mat invDplus, mat invDminus, int i, int spin, mat r, double a, double w);
 vec delJastrow(int k, mat r, double b, mat c);
 mat D(mat r, int spin, double a, double w);
-//double psiC(mat r, double b, mat c);
+double psiC(mat r, double b, mat c);
 double logpsiC(mat r, double b, mat c);
-double * vmc(double a,double b,mat c,double w,int n, int iters);
-double dpsida(mat r, mat D, mat invD,double a,double w, int spin);
-double dpsidb(mat r, double b, mat c);
 
 
 int main(int nargs, char *args[])
 {
-    n = atof(args[3]);
-    int iterations = pow(2,15);
-    mat c = ones<mat>(n,n);
+    double w = 1;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j< n; j++) {
              if (i % 2 == j % 2)
                  c(i,j) = 1/3.;
         }
     }
-    double a = atof(args[1]);
-    double b = atof(args[2]);
-    double w = atof(args[4]);
-    double E;
-    double apsi;
-    double bpsi;
-    double eapsi;
-    double ebpsi;
-    vec xpp {a,b};
-    vec x = xpp + ones<vec>(2)*0.1;
-    vec delF = zeros<vec>(2);
-    int i = 0;
-    MPI_Init(NULL, NULL);
-    int numprocs, my_rank;
-    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
-
-    while (true) {
-        double * data;
-        data = vmc(xpp[0],xpp[1],c,w,n,iterations);
-        MPI_Allreduce(&data[2], &E, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        MPI_Allreduce(&data[7], &apsi, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        MPI_Allreduce(&data[8], &bpsi, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        MPI_Allreduce(&data[9], &eapsi, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        MPI_Allreduce(&data[10], &ebpsi, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-        delF[0] = 2*( eapsi/numprocs - E/numprocs*apsi/numprocs );
-        delF[1] = 2*( ebpsi/numprocs - E/numprocs*bpsi/numprocs );
-        double g = 0.0001;
-        x = xpp - g*delF;
-        //if (norm(delF) < 1e-4) {
-        //    x.print();
-        //    break;
-        //}
-        //if (i % 10 == 0) {
-            if (my_rank == 0) {
-                x.print();
-                cout << endl;
-                delF.print();
-                cout << E/numprocs << endl;
-                cout << "*******************************" << endl;
-            }
-        //}
-        xpp = x;
-        i++;
+    double a=0.8, b=0.2;
+    if (w == 1) {
+        switch(n) {
+            case 6:
+               a = 1.03741; b = 0.472513; break;
+            case 12:
+               a = 1.10364; b = 0.468861; break;
+        case 20:
+           a = 1.06019; b = 0.474467; break;
+            default:
+               a = 1.0; b = 0.4;
+        }
+    } else if(w == 0.1)  {
+        switch(n) {
+            case 6:
+               a = 0.831104; b = 0.211443; break;
+            case 12:
+               a = 0.84105; b = 0.208143;  break;
+        case 20:
+           a = 0.856981; b = 0.200372; break;
+            default:
+               a = 0.952833; b = 0.354292;
+        }
+    } else if(w == 0.01)  {
+        switch(n) {
+            default:
+               a = 0.911692; b = 0.203919;
+        }
     }
-
-    MPI_Finalize();
-    //cout << data[0] << " " << data[1] << " " << data[2] << " " << data[3] << " " << data[4] << " " << data[5] << " " << data[6] << endl;
-    return 0;
-}
-
-double * vmc(double a,double b,mat c,double w,int n, int iters) {
-    uniform_int_distribution<int> rand_particle(0, n-1);
-    uniform_int_distribution<int> rand_bool(0, 1);
-    uniform_real_distribution<double> rand_double(0.0,1.0);
+    double dt = 0.005; double d = 0.5;
     mat r = randn<mat>(2,n)*sqrt(1./w);
     mat Dplus = D(r, 0, a, w);
     mat Dminus = D(r, 1, a, w);
@@ -116,115 +91,69 @@ double * vmc(double a,double b,mat c,double w,int n, int iters) {
     F = 2*delPsi(0, r, invDplus, invDminus, a, b, c, w);
     Fpp = 2*delPsi(1, r, invDplus, invDminus, a, b, c, w);
 
-    double dt = 0.005; double d = 0.5;
-    double e; double E = 0; double V = 0; double K = 0; double R = 0; double ki; double ri; double vi;
-    int u = 0; int v = 0; int s;
+    double wf = det(Dplus)*det(Dminus)*psiC(r,b,c);
+    double e; double E = 0;
+    int u = 0; int v = 0; int k;
+    double wfpp = wf;
+    double result = 0;
     double logdet, logdetpp, logJastrow, logJastrowpp, logG;
-    double apsi = 0;
-    double bpsi = 0;
-    double eapsi = 0;
-    double ebpsi = 0;
 
-
+    MPI_Init(&nargs, &args);
+    int numprocs;
+    MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
+    int my_rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
     double time_start = MPI_Wtime();
-    for (u = 0; u < iters; u++) {
-        s = rand_particle(gen);
-        Fpp = 2*delPsi(s,rpp,invDpluspp,invDminuspp,a,b,c,w);
+    if (my_rank == 0) {
+        cout << "Numprocs = " << numprocs << endl;
+        cout << "a = " << a << ", b = " << b << endl;
+    }
+    for (u = 0; u < iterations; u++) {
+        k = rand_particle(gen);
+        Fpp = 2*delPsi(k,rpp,invDpluspp,invDminuspp,a,b,c,w);
         r = rpp;
-        r.col(s) = rpp.col(s) + d*Fpp*dt + randn<vec>(2)*sqrt(dt);
-
+//        r.col(k) = rpp.col(k) + randn<vec>(2)*sqrt(1./w);
+        r.col(k) = rpp.col(k) + d*Fpp*dt + randn<vec>(2)*sqrt(dt);
         Dplus  = D(r, 0, a, w);
-        Dminus = D(r, 1, a, w);
-        if (abs(det(Dminus)) < 1e-1 or abs(det(Dminus)) < 1e-1)
-            continue;
         invDplus = inv(Dplus);
+        Dminus = D(r, 1, a, w);
         invDminus = inv(Dminus);
-
-        //cout << invDplus(0,0)*B.psi(0,0,sqrt(a)*r(0,0),sqrt(a)*r(1,0),w) << endl;
-        //exit(1);
-        F = 2*delPsi(s,r,invDplus,invDminus,a,b,c,w);
-        p = rpp.col(s) - r.col(s) - d*dt*F;
-        q = r.col(s) - rpp.col(s) - d*dt*Fpp;
+        F = 2*delPsi(k,r,invDplus,invDminus,a,b,c,w);
+        p = rpp.col(k) - r.col(k) - d*dt*F;
+        q = r.col(k) - rpp.col(k) - d*dt*Fpp;
         logG = abs((dot(q,q) - dot(p,p))/(4*d*dt));
+        wf = det(Dplus)*det(Dminus)*psiC(r,b,c);
+        // hasting-metropolis test
+//        if ( wf*wf*Gyx/(wfpp*wfpp*Gxy) > rand_double(gen) ) {
         logdet = log( abs(det(Dplus) *det(Dminus) ) );
         logJastrow = logpsiC(r,b,c);
         if ( logG + 2*(logdet - logdetpp + logJastrow - logJastrowpp) > log(rand_double(gen)) ) {
-            rpp = r; Dpluspp = Dplus; Dminuspp = Dminus; invDpluspp = invDplus;
+            rpp = r; wfpp = wf; Dpluspp = Dplus; Dminuspp = Dminus; invDpluspp = invDplus;
             invDminuspp = invDminus; logdetpp = logdet; logJastrowpp = logJastrow;
             v++;
         }
 
-
         // sample energy
-        e = 0; ki = 0; vi = 0;
+        e = 0;
         for (int i = 0; i < n; i++) {
             //cout << laplacePsi(i, rpp, invDpluspp, invDminuspp, a, b, c, w) << endl;
             //exit(1);
-            ki += -0.5*laplacePsi(i, rpp, invDpluspp, invDminuspp, a, b, c, w);
-            vi += 0.5*w*w*dot(rpp.col(i),rpp.col(i));
             e += -0.5*laplacePsi(i, rpp, invDpluspp, invDminuspp, a, b, c, w) + 0.5*w*w*dot(rpp.col(i),rpp.col(i));
             for (int j = i+1; j < n; j++) {
-                vi += 1./norm(rpp.col(i) - rpp.col(j));
                 e += 1./norm(rpp.col(i) - rpp.col(j));
             }
         }
-        double rij = norm(r.col(0) - r.col(1));
-        //double tmpaa = -0.5*w*(dot(r.col(0),r.col(0)) + dot(r.col(1),r.col(1)) );
-        //double tmpbb = -rij*rij/pow(1 + b*rij,2);
-        double tmpa = dpsida(r, Dplus, invDplus, a, w, 0) + dpsida(r, Dminus, invDminus, a, w, 1);
-        double tmpb = dpsidb(r, b, c);
-        /*
-        if ( abs(tmpaa - tmpa ) >1e-7) {
-            cout << u << ": " << tmpaa << " " << tmpa << endl;
-            exit(1);
-        }*/
-        apsi += tmpa/iters;
-        bpsi += tmpb/iters;
-        eapsi += e*tmpa/iters;
-        ebpsi += e*tmpb/iters;
-        E += e/iters; V += vi/iters; K += ki/iters;
+        E += e/iterations;
+        //break;
     }
-    double *data = new double [11];
-    data[0] = a;
-    data[1] = b;
-    data[2] = E;
-    data[3] = K;
-    data[4] = V;
-    data[5] = v/iters;
-    data[6] = MPI_Wtime() - time_start;
-    data[7] = apsi;
-    data[8] = bpsi;
-    data[9] = eapsi;
-    data[10] = ebpsi;
-    return data;
+    MPI_Reduce(&E, &result, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+    MPI_Finalize();
+    if (my_rank == 0)
+        cout << "<E> = " << result/numprocs << ", r = " << (double) v/iterations << ", elapsed: " << MPI_Wtime() - time_start << endl;
+    return 0;
 }
 
-double dpsida(mat r, mat D, mat invD,double a,double w, int spin) {
-    double sum = 0;
-    for (int i = 0; i < n/2; i++) {
-        for (int j = 0; j < n/2; j++) {
-            double x = r(0,2*j + spin);
-            double y = r(1,2*j + spin);
-            int nx = B.get_state(2*i + 1 + spin)[0];
-            int ny = B.get_state(2*i + 1 + spin)[1];
-            sum += invD(i,j)*( x*nx*sqrt(w/a)*B.psi(nx-1,ny,sqrt(a)*x,sqrt(a)*y,w) + y*ny*sqrt(w/a)*B.psi(nx,ny-1,sqrt(a)*x,sqrt(a)*y,w)
-                               - 0.5*w*dot(r.col(2*j+spin),r.col(2*j+spin))*B.psi(nx, ny, sqrt(a)*x, sqrt(a)*y,w) );
-        }
-    }
-    //cout << sum + 0.5*w*dot(r.col(spin),r.col(spin)) << endl;
-    return sum;
-}
-
-double dpsidb(mat r, double b, mat c) {
-    double sum = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i+1; j < n; j++) {
-            double rij = norm(r.col(i) - r.col(j));
-            sum += c(i,j)*pow( rij/(1+b*rij),2);
-        }
-    }
-    return -sum;
-}
+//*************************
 
 double laplaceJastrow(int k, mat r, double b, mat c) {
     double x = 0; double y = 0; double xy = 0; double rkj;
@@ -270,7 +199,6 @@ double laplaceD(mat invDplus, mat invDminus, int i, int spin, mat r, double a,do
         int ny = B.get_state(2*j + 1 + spin)[1];
         double x = r(0,i);
         double y = r(1,i);
-
         sum += invD(j,i/2)*(4*a*w*(nx*(nx-1)*B.psi(nx-2,ny,sqrt(a)*x,sqrt(a)*y,w) + ny*(ny-1)*B.psi(nx,ny-2,sqrt(a)*x,sqrt(a)*y,w))
                - 4*pow(a*w,1.5)*(x*nx*B.psi(nx-1,ny,sqrt(a)*x,sqrt(a)*y,w) + y*ny*B.psi(nx,ny-1,sqrt(a)*x,sqrt(a)*y,w) )
                + a*w*B.psi(nx,ny,sqrt(a)*x,sqrt(a)*y,w)*(a*w*dot(r.col(i),r.col(i)) - 2));
@@ -309,7 +237,7 @@ mat D(mat r, int spin, double a, double w) {
     }
     return D;
 }
-/*
+
 double psiC(mat r, double b, mat c) {
     double jastrow = 0;
     for (int i = 0; i < n; i++) {
@@ -320,7 +248,6 @@ double psiC(mat r, double b, mat c) {
     }
     return exp(jastrow);
 }
-*/
 
 double logpsiC(mat r, double b, mat c) {
     double jastrow = 0;
@@ -343,6 +270,7 @@ double laplacePsi(int i, mat r, mat invDplus, mat invDminus, double a, double b,
     sum += laplaceJastrow(i, r, b, c);
     // compute del D+/- dot del jastrow
     sum += 2*dot(delD(invDplus, invDminus, i, spin, r, a, w), delJastrow(i, r, b, c));
+    //cout << "LaplacePsiHo " << laplaceD(invDplus, invDminus, i,spin, r,a,w) << " LaplacePsiC " << laplaceJastrow(i, r, b, c) << "delPsiHo*DelpsiC "<< 2*dot(delD(invDplus, invDminus, i, spin, r, a, w), delJastrow(i, r, b, c)) << endl;
     // return sum of terms
     return sum;
 }

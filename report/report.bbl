@@ -1,0 +1,137 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.5 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{degroot_probability_2012}{book}{}
+  \name{author}{2}{}{%
+    {{}%
+     {DeGroot}{D.}%
+     {Morris~H.}{M.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schervish}{S.}%
+     {Mark~J.}{M.~J.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{Pearson Education, Inc.}}%
+  }
+  \strng{namehash}{DMHSMJ1}
+  \strng{fullhash}{DMHSMJ1}
+  \field{labelyear}{2012}
+  \field{sortinit}{D}
+  \field{edition}{4}
+  \field{title}{Probability and {{Statistics}}}
+  \field{year}{2012}
+\endentry
+
+\entry{flyvbjerg_error_1989}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Flyvbjerg}{F.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Petersen}{P.}%
+     {H.G}{H.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{FHPH1}
+  \strng{fullhash}{FHPH1}
+  \field{labelyear}{1989}
+  \field{sortinit}{F}
+  \field{number}{91}
+  \field{pages}{461\bibrangedash 466}
+  \field{title}{Error Estimates on Averages of Correlated Data}
+  \field{journaltitle}{The Journal of Chemical Physics}
+  \field{day}{01}
+  \field{month}{07}
+  \field{year}{1989}
+\endentry
+
+\entry{hazewinkel_gradient_1989}{inreference}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Hazewinkel}{H.}%
+     {Michiel}{M.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{Kluwer}}%
+  }
+  \strng{namehash}{HM1}
+  \strng{fullhash}{HM1}
+  \field{labelyear}{1989}
+  \field{sortinit}{H}
+  \field{booktitle}{Encyclopedia of Mathematics}
+  \field{edition}{1}
+  \field{title}{Gradient Method}
+  \field{volumes}{13}
+  \field{volume}{4}
+  \list{location}{1}{%
+    {{The Netherlands}}%
+  }
+  \field{year}{1989}
+\endentry
+
+\entry{press_numerical_2007}{book}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Press}{P.}%
+     {William~H.}{W.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Teukolsky}{T.}%
+     {Saul~A.}{S.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vetterling}{V.}%
+     {William~T.}{W.~T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Flannery}{F.}%
+     {Brian~P.}{B.~P.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{Cambridge university press}}%
+  }
+  \strng{namehash}{PWH+1}
+  \strng{fullhash}{PWHTSAVWTFBP1}
+  \field{labelyear}{2007}
+  \field{sortinit}{P}
+  \field{edition}{3}
+  \field{title}{Numerical Recipes}
+  \list{location}{1}{%
+    {{Cambridge}}%
+  }
+  \field{year}{2007}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput
