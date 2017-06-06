@@ -1,9 +1,0 @@
-Will compute ground state energy of test state function. Will print expected energy, expected kinetic energy, expected potential energy, mean distance between particles (printed in that order)
-
-
-Syntax is mpirun -n <num threads> ./mons <num particles> <alpha> <beta> <omega> <dt>
-
-Example:
-
-~ $ /usr/bin/mpirun -n 4 ./mons 2 1 0.4 1 0.001
-3.001219 0.8814728 2.119747 1.596024
