@@ -1,0 +1,8 @@
+Will estiamte variance of a given dataset. File is saved to ../resources directory, and filename entered into the list of input data in the script file. Blocking will be completed, and results saved to the benchmark directory. 
+
+Example:
+
+~ $ python ../code/blocking.py 
+Loading file...
+Blocking...
+Elapsed importing: 6.22813296318  Elapsed blocking: 0.973709106445

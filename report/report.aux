@@ -19,6 +19,8 @@
 \bibstyle{biblatex}
 \bibdata{report-blx,/home/marius/Dokumenter/MyLibrary}
 \citation{biblatex-control}
+\citation{nicholas_metropolis_equation_1953}
+\citation{varadhan_probability_2001}
 \@writefile{toc}{\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax }
 \@writefile{lof}{\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax }
 \@writefile{lot}{\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax }
@@ -26,10 +28,11 @@
 \@writefile{toc}{\defcounter {refsection}{0}\relax }\@writefile{toc}{\select@language{english}}
 \@writefile{lof}{\defcounter {refsection}{0}\relax }\@writefile{lof}{\select@language{english}}
 \@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\select@language{english}}
-\newlabel{eq:ET}{{1}{1}{}{equation.0.1}{}}
+\newlabel{eq:ET}{{1}{2}{}{equation.0.1}{}}
 \newlabel{eq:psiT}{{2}{2}{}{equation.0.2}{}}
 \newlabel{eq:metropolis}{{3}{2}{Hastings-Metropolis theorem}{equation.0.3}{}}
 \newlabel{thm:metropolis}{{1}{2}{Hastings-Metropolis theorem}{equation.0.3}{}}
+\citation{devore_modern_2012}
 \citation{degroot_probability_2012}
 \citation{degroot_probability_2012}
 \citation{degroot_probability_2012}
@@ -40,27 +43,44 @@
 \citation{hazewinkel_gradient_1989}
 \citation{hazewinkel_gradient_1989}
 \citation{hazewinkel_gradient_1989}
+\newlabel{eq:wf}{{4}{3}{}{equation.0.4}{}}
 \newlabel{eq:decent}{{6}{3}{}{equation.0.6}{}}
-\newlabel{eq:ineq}{{7}{4}{}{equation.0.7}{}}
-\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Program for Hastings-Metropolis-style implementation of a quantum dot of two electrons. The variables \texttt  {r}, \texttt  {rpp} contain the positions at sequential steps, \texttt  {F}, \texttt  {Fpp} contain the quantity $\nabla \psi _T/\psi _T$ for sequential steps and \texttt  {rij}, \texttt  {rijpp} contain the distance between electrons at sequential steps. The program returns the energy with uncertainty in the variance of $\mathrm  {Var} \left ( \overline  {E_T} \right ) = 10^{-10}$ and rejection ratio $r < 10^{-4}$.\relax }}{5}{table.caption.1}}
+\citation{shumway_time_2011}
+\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Program for Hastings-Metropolis-style implementation of a quantum dot of two electrons. The variables \texttt  {r}, \texttt  {rpp} contain the positions at sequential steps, \texttt  {F}, \texttt  {Fpp} contain the quantity $\nabla \psi _T/\psi _T$ for sequential steps and \texttt  {rij}, \texttt  {rijpp} contain the distance between electrons at sequential steps. The program returns the energy with uncertainty, $\mathrm  {Var} \left ( \left \delimiter "426830A E \right \delimiter "526930B  \right ) = 10^{-10}$ and rejection ratio $r < 10^{-4}$ for the importance sampling.\relax }}{5}{table.caption.1}}
+\citation{m._pedersen_lohne_ab_2011}
+\newlabel{eq:ineq}{{7}{6}{}{equation.0.7}{}}
+\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Estimates of expected value for the state function specified by equation \textup  {\hbox {\mathsurround \z@ \normalfont  (\ignorespaces \ref  {eq:wf}\unskip \@@italiccorr )}}. The error bars given represent one standard deviation from the mean. $\left \delimiter "426830A E \right \delimiter "526930B $, $\left \delimiter "426830A K \right \delimiter "526930B $ and $\left \delimiter "426830A V \right \delimiter "526930B $ represent the expectation of ground state- , kinetic- and potential energy respectively, whilst $\left \delimiter "426830A r_{ij} \right \delimiter "526930B $ represent the mean distance between any two of the $n$ electrons at the frequency $\omega $.\relax }}{7}{table.caption.2}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tbl:observables}{{2}{7}{Estimates of expected value for the state function specified by equation \eqref {eq:wf}. The error bars given represent one standard deviation from the mean. $\E {E}$, $\E {K}$ and $\E {V}$ represent the expectation of ground state- , kinetic- and potential energy respectively, whilst $\E {r_{ij}}$ represent the mean distance between any two of the $n$ electrons at the frequency $\omega $.\relax }{table.caption.2}{}}
+\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Suitable choice of paramaters. Here $\alpha $ and $\beta $ refer to the variational parameters of the Slater-Jastrow-type state function chosen whilst $\Delta t$ give the variance of the positions $r^{(i)}_k$ for all $i,k \in \mathbb  {N}$. Acceptance refers to the ratio of the accepted values of $r^{(i)}_k$ to the total number of Monte-Carlo cycles. Typically the first non-nine decimal place was the 5th or 6th digit.\relax }}{8}{table.caption.3}}
+\newlabel{tbl:params}{{3}{8}{Suitable choice of paramaters. Here $\alpha $ and $\beta $ refer to the variational parameters of the Slater-Jastrow-type state function chosen whilst $\Delta t$ give the variance of the positions $r^{(i)}_k$ for all $i,k \in \mathbb {N}$. Acceptance refers to the ratio of the accepted values of $r^{(i)}_k$ to the total number of Monte-Carlo cycles. Typically the first non-nine decimal place was the 5th or 6th digit.\relax }{table.caption.3}{}}
+\citation{devore_modern_2012}
+\newlabel{eq:speedup}{{8}{9}{}{equation.0.8}{}}
+\@writefile{lot}{\defcounter {refsection}{0}\relax }\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces By Analysis of variance, we found no significant difference between the runtimes of the vectorized and serial code, given that the 20 runtimes were independent, normally distributed with identical variance on 18 degrees of freedom. \relax }}{9}{table.caption.4}}
+\newlabel{tbl:anova}{{4}{9}{By Analysis of variance, we found no significant difference between the runtimes of the vectorized and serial code, given that the 20 runtimes were independent, normally distributed with identical variance on 18 degrees of freedom. \relax }{table.caption.4}{}}
+\newlabel{eq:epsilon}{{9}{9}{}{equation.0.9}{}}
+\citation{flyvbjerg_error_1989}
+\newlabel{eq:T}{{10}{10}{}{equation.0.10}{}}
+\newlabel{lemma:k}{{1}{10}{}{lemma.1}{}}
+\newlabel{eq:rate}{{11}{10}{}{equation.0.11}{}}
+\newlabel{prop:diff}{{2}{10}{}{equation.0.11}{}}
+\newlabel{eq:epsilonkpp}{{12}{11}{}{equation.0.12}{}}
+\newlabel{eq:sumB}{{13}{11}{}{equation.0.13}{}}
+\newlabel{eq:differencesum}{{14}{11}{}{equation.0.14}{}}
+\newlabel{eq:nsum}{{15}{11}{}{equation.0.15}{}}
+\newlabel{eq:sumsum}{{16}{11}{}{equation.0.16}{}}
+\newlabel{eq:hypothesis}{{17}{12}{}{equation.0.17}{}}
+\citation{m._pedersen_lohne_ab_2011}
+\citation{press_numerical_2007}
 \citation{flyvbjerg_error_1989}
 \citation{flyvbjerg_error_1989}
-\newlabel{eq:epsilon}{{8}{6}{}{equation.0.8}{}}
-\newlabel{eq:T}{{9}{6}{}{equation.0.9}{}}
-\newlabel{lemma:k}{{1}{6}{}{lemma.1}{}}
-\newlabel{eq:rate}{{10}{7}{}{equation.0.10}{}}
-\newlabel{prop:diff}{{2}{7}{}{equation.0.10}{}}
-\newlabel{eq:epsilonkpp}{{11}{7}{}{equation.0.11}{}}
-\newlabel{eq:sumB}{{12}{7}{}{equation.0.12}{}}
-\newlabel{eq:differencesum}{{13}{8}{}{equation.0.13}{}}
-\newlabel{eq:nsum}{{14}{8}{}{equation.0.14}{}}
-\newlabel{eq:sumsum}{{15}{8}{}{equation.0.15}{}}
-\newlabel{eq:hypothesis}{{16}{8}{}{equation.0.16}{}}
-\newlabel{prop:sequence}{{3}{9}{}{prop.3}{}}
-\newlabel{eq:metropolis}{{18}{11}{Hastings-Metropolis theorem}{equation.0.18}{}}
-\newlabel{thm:metropolis}{{3}{11}{Hastings-Metropolis theorem}{equation.0.18}{}}
-\newlabel{eq:detailed_balance}{{19}{12}{}{equation.0.19}{}}
-\newlabel{eq:varXn}{{20}{12}{}{equation.0.20}{}}
-\newlabel{eq:VarXn2}{{21}{12}{}{equation.0.21}{}}
-\newlabel{lemma:inequality}{{}{13}{}{equation.0.21}{}}
-\newlabel{eq:innerproduct}{{22}{13}{}{equation.0.22}{}}
+\newlabel{prop:sequence}{{3}{13}{}{prop.3}{}}
+\newlabel{eq:steepest1}{{19}{17}{}{equation.0.19}{}}
+\newlabel{eq:steepest2}{{20}{17}{}{equation.0.20}{}}
+\newlabel{eq:metropolis}{{21}{17}{Hastings-Metropolis theorem}{equation.0.21}{}}
+\newlabel{thm:metropolis}{{3}{17}{Hastings-Metropolis theorem}{equation.0.21}{}}
+\newlabel{eq:detailed_balance}{{22}{17}{}{equation.0.22}{}}
+\newlabel{lemma:inequality}{{}{17}{}{equation.0.22}{}}
+\citation{mcdonald_course_2012}
+\citation{lay_linear_2012}
+\newlabel{eq:innerproduct}{{23}{18}{}{equation.0.23}{}}

@@ -1,0 +1,102 @@
+Will estiamte variational parameters, and print result from each iteration and print to screen. Will also print energy to indicate stability. 
+
+
+Syntax is mpirun -n <num threads> ./mons <num particles> <alpha> <beta> <omega> <dt>
+
+Example:
+
+~ $ /usr/bin/mpirun -n 4 ../code/steepest/mons 2 1 0.4 1 0.001
+(alpha,beta) = 
+0.9995072
+0.4008766
+E = 3.002008
+
+(alpha,beta) = 
+1.001755
+0.4019319
+E = 3.005393
+
+(alpha,beta) = 
+0.987618
+0.3959211
+E = 2.999949
+
+(alpha,beta) = 
+0.989527
+0.3971167
+E = 3.000142
+
+(alpha,beta) = 
+0.9885236
+0.396623
+E = 2.99861
+
+(alpha,beta) = 
+0.9890864
+0.3970905
+E = 3.001514
+
+(alpha,beta) = 
+0.9890538
+0.3967344
+E = 3.012869
+
+(alpha,beta) = 
+0.9889618
+0.3967468
+E = 3.008291
+
+(alpha,beta) = 
+0.988952
+0.3967202
+E = 3.001161
+
+(alpha,beta) = 
+0.988973
+0.3967363
+E = 3.000857
+
+(alpha,beta) = 
+0.989019
+0.3967605
+E = 3.003182
+
+(alpha,beta) = 
+0.9890514
+0.3967561
+E = 2.999684
+
+(alpha,beta) = 
+0.9890582
+0.3967658
+E = 3.00113
+
+(alpha,beta) = 
+0.9890505
+0.396765
+E = 2.991266
+
+(alpha,beta) = 
+0.9890495
+0.3967663
+E = 2.998834
+
+(alpha,beta) = 
+0.9890502
+0.3967647
+E = 3.025122
+
+(alpha,beta) = 
+0.9890498
+0.3967641
+E = 2.997301
+
+(alpha,beta) = 
+0.9890502
+0.3967645
+E = 3.050621
+
+(alpha,beta) = 
+0.9890501
+0.3967645
+E = 3.004275

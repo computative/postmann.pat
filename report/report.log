@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.6)  29 MAY 2017 02:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2016.3.6)  2 JUN 2017 00:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1800,120 +1800,149 @@ mpat=1.1.0]{tikz-feynman} so that you can be warned if TikZ-Feynman changes. on
 (/usr/local/texlive/2015/texmf-dist/tex/latex/newtx/t1ntxtt.fd
 File: t1ntxtt.fd 2012/04/20 v3.1
 )
-(/home/marius/texmf/tex/latex/mtpro2/umt2hrb.fd
-File: umt2hrb.fd 2009/1/30 v2.2 MathTimePro II Holey Roman Bold (PCTeX/WaS)
-)
 Underfull \hbox (badness 10000) in paragraph at lines 15--18
 
  []
 
-[1
+(/home/marius/texmf/tex/latex/mtpro2/umt2hrb.fd
+File: umt2hrb.fd 2009/1/30 v2.2 MathTimePro II Holey Roman Bold (PCTeX/WaS)
+) [1
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 30--36
+Underfull \hbox (badness 10000) in paragraph at lines 26--32
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 30--36
+Underfull \hbox (badness 10000) in paragraph at lines 26--32
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--44
+Underfull \hbox (badness 10000) in paragraph at lines 33--38
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--44
+Underfull \hbox (badness 10000) in paragraph at lines 33--38
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 37--44
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 54--57
+Underfull \hbox (badness 10000) in paragraph at lines 48--51
 
  []
 
 [2]
-Overfull \hbox (3.58557pt too wide) detected at line 74
+Overfull \hbox (3.58557pt too wide) detected at line 68
 \LMP1/mtt/m/it/10.95 q[] \LMP2/mtt/m/n/10.95 D \LMP1/mtt/m/it/10.95 G.[][]; [][
 ]\LMP2/mtt/m/n/10.95 I \LMP1/mtt/m/it/10.95 ^^At/ \LMP2/mtt/m/n/10.95 D [] [] [
 ] \LMP1/mtt/m/it/10.95 ;  []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 78--82
+Underfull \hbox (badness 10000) in paragraph at lines 72--76
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--92
+Underfull \hbox (badness 10000) in paragraph at lines 82--88
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--88
 
  []
 
 [3]
-Underfull \hbox (badness 10000) in paragraph at lines 95--134
+Underfull \hbox (badness 10000) in paragraph at lines 90--94
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 144--151
+Underfull \hbox (badness 10000) in paragraph at lines 97--136
 
  []
 
 [4] [5]
-Underfull \hbox (badness 10000) in paragraph at lines 165--171
+Underfull \hbox (badness 10000) in paragraph at lines 138--142
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 165--171
+Underfull \hbox (badness 10000) in paragraph at lines 148--153
 
  []
 
-[6]
-Overfull \hbox (4.01509pt too wide) in paragraph at lines 238--238
+[6] [7] [8]
+Underfull \hbox (badness 10000) in paragraph at lines 235--253
+
+ []
+
+[9] [10]
+Overfull \hbox (4.01509pt too wide) in paragraph at lines 335--335
 [] 
  []
 
-[7] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 338--345
+[11] [12]
+Underfull \hbox (badness 10000) in paragraph at lines 430--445
 
  []
 
-[9]
-Overfull \hbox (24.47473pt too wide) detected at line 358
-\LMP1/mtt/m/it/10.95  [].[][]; [][]/ \LMP2/mtt/m/n/10.95 D \LMP1/mtt/m/it/10.95
- C. [] []/.[][]; [][]/;   [].[][]; [][]/ \LMP2/mtt/m/n/10.95 D [] [] \LMP1/mtt/
-m/it/10.95 ;   [].[][]; [][]/ \LMP2/mtt/m/n/10.95 D [] []
+
+Underfull \hbox (badness 10000) in paragraph at lines 430--445
+
  []
 
-[10]
-Overfull \hbox (18.97661pt too wide) in paragraph at lines 391--391
+
+Underfull \hbox (badness 10000) in paragraph at lines 430--445
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 430--445
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 430--445
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 430--445
+
+ []
+
+[13] [14]
+Underfull \hbox (badness 10000) in paragraph at lines 456--461
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 456--461
+
+ []
+
+[15]
+Overfull \hbox (24.47473pt too wide) detected at line 474
+\LMP1/mtt/m/it/10.95  [].[][]; [][]/ \LMP2/ntxtlf/m/it/10.95 D \LMP1/mtt/m/it/1
+0.95 C. [] []/.[][]; [][]/;   [].[][]; [][]/ \LMP2/ntxtlf/m/it/10.95 D [] [] \L
+MP1/mtt/m/it/10.95 ;   [].[][]; [][]/ \LMP2/ntxtlf/m/it/10.95 D [] []
+ []
+
+
+Overfull \hbox (18.97661pt too wide) in paragraph at lines 507--507
 [] 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 411--416
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 411--416
-
- []
-
-[11] [12] [13]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 499.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 499.
+[16] [17] [18]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 587.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 587.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 499.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 499.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 587.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 587.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 
@@ -1923,16 +1952,16 @@ LaTeX Warning: There were multiply-defined labels.
 Package logreq Info: Writing requests to 'report.run.xml'.
 \openout1 = `report.run.xml'.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 499.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 587.
  ) 
 Here is how much of TeX's memory you used:
- 39965 strings out of 493033
- 870659 string characters out of 6134146
- 1375407 words of memory out of 5000000
- 42744 multiletter control sequences out of 15000+600000
+ 40006 strings out of 493033
+ 871425 string characters out of 6134146
+ 1377494 words of memory out of 5000000
+ 42766 multiletter control sequences out of 15000+600000
  191122 words of font info for 100 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,27n,97p,1480b,1464s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 57i,27n,97p,2279b,1466s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</ho
 me/marius/texmf/fonts/type1/pctex/mtpro2/mt2bmit.pfb></home/marius/texmf/fonts/
 type1/pctex/mtpro2/mt2exa.pfb></home/marius/texmf/fonts/type1/pctex/mtpro2/mt2e
@@ -1948,10 +1977,10 @@ e1/public/tex-gyre/qtmbi.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pu
 blic/tex-gyre/qtmr.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/t
 ex-gyre/qtmri.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/txfont
 s/t1xtt.pfb>
-Output written on report.pdf (13 pages, 279282 bytes).
+Output written on report.pdf (18 pages, 294474 bytes).
 PDF statistics:
- 363 PDF objects out of 1000 (max. 8388607)
- 228 compressed objects within 3 object streams
- 82 named destinations out of 1000 (max. 500000)
+ 440 PDF objects out of 1000 (max. 8388607)
+ 288 compressed objects within 3 object streams
+ 99 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

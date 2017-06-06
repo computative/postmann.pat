@@ -41,6 +41,34 @@
   \field{year}{2012}
 \endentry
 
+\entry{devore_modern_2012}{book}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Devore}{D.}%
+     {Jay~L.}{J.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Berk}{B.}%
+     {Kenneth~L.}{K.~L.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{Springer}}%
+  }
+  \strng{namehash}{DJLBKL1}
+  \strng{fullhash}{DJLBKL1}
+  \field{labelyear}{2012}
+  \field{sortinit}{D}
+  \field{edition}{2}
+  \field{title}{Modern {{Mathematical Statistics}} with {{Applications}}}
+  \list{location}{1}{%
+    {{London}}%
+  }
+  \field{year}{2012}
+\endentry
+
 \entry{flyvbjerg_error_1989}{article}{}
   \name{author}{2}{}{%
     {{}%
@@ -93,6 +121,138 @@
   \field{year}{1989}
 \endentry
 
+\entry{lay_linear_2012}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Lay}{L.}%
+     {David~C.}{D.~C.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{Addison-Wesley}}%
+  }
+  \strng{namehash}{LDC1}
+  \strng{fullhash}{LDC1}
+  \field{labelyear}{2012}
+  \field{sortinit}{L}
+  \field{edition}{4}
+  \field{pagetotal}{481}
+  \field{title}{Linear Algebra and Its Applications}
+  \list{location}{1}{%
+    {{Boston}}%
+  }
+  \field{year}{2012}
+\endentry
+
+\entry{m._pedersen_lohne_ab_2011}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {{M. Pedersen Lohne}}{M.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {{G. Hagen}}{G.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {{M. Hjorth-Jensen}}{M.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {{S. Kvaal}}{S.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {{F. Pederiva}}{F.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{M+1}
+  \strng{fullhash}{MGMSF1}
+  \field{labelyear}{2011}
+  \field{sortinit}{M}
+  \field{number}{84}
+  \field{title}{Ab Initio Computation of the Energies of Circular Quantum Dots}
+  \field{journaltitle}{Physical review B}
+  \field{year}{2011}
+\endentry
+
+\entry{mcdonald_course_2012}{book}{}
+  \name{author}{2}{}{%
+    {{}%
+     {McDonald}{M.}%
+     {John~N.}{J.~N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Weiss}{W.}%
+     {Neil~A.}{N.~A.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{Academic press}}%
+  }
+  \strng{namehash}{MJNWNA1}
+  \strng{fullhash}{MJNWNA1}
+  \field{labelyear}{2012}
+  \field{sortinit}{M}
+  \field{edition}{2}
+  \field{title}{A Course in Real Analysis}
+  \list{location}{1}{%
+    {{Oxford}}%
+  }
+  \field{year}{2012}
+\endentry
+
+\entry{nicholas_metropolis_equation_1953}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Metropolis}{M.}%
+     {Nicholas}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Rosenbluth}{R.}%
+     {Arianna~W.}{A.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Rosenbluth}{R.}%
+     {Marshall~N.}{M.~N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Teller}{T.}%
+     {Augusta~H.}{A.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Teller}{T.}%
+     {Edward}{E.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{MN+1}
+  \strng{fullhash}{MNRAWRMNTAHTE1}
+  \field{labelyear}{1953}
+  \field{sortinit}{M}
+  \field{number}{6}
+  \field{pages}{1087\bibrangedash 1092}
+  \field{title}{Equation of {{State Calculations}} by {{Fast Computing
+  Machines}}}
+  \field{volume}{21}
+  \field{journaltitle}{The Journal of Chemical Physics}
+  \field{month}{06}
+  \field{year}{1953}
+\endentry
+
 \entry{press_numerical_2007}{book}{}
   \name{author}{4}{}{%
     {{}%
@@ -129,6 +289,57 @@
     {{Cambridge}}%
   }
   \field{year}{2007}
+\endentry
+
+\entry{shumway_time_2011}{book}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Shumway}{S.}%
+     {Robert~H.}{R.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Stoffer}{S.}%
+     {David~S.}{D.~S.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{Springer}}%
+  }
+  \strng{namehash}{SRHSDS1}
+  \strng{fullhash}{SRHSDS1}
+  \field{labelyear}{2011}
+  \field{sortinit}{S}
+  \field{edition}{3}
+  \field{title}{Time Series Analysis and Its Applications with {{R}} Examples}
+  \list{location}{1}{%
+    {{New York}}%
+  }
+  \field{year}{2011}
+\endentry
+
+\entry{varadhan_probability_2001}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Varadhan}{V.}%
+     {Sathamangalam Ranga Iyengar~Srinivasa}{S.~R. I.~S.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {{American Mathematical Society}}%
+  }
+  \strng{namehash}{VSRIS1}
+  \strng{fullhash}{VSRIS1}
+  \field{labelyear}{2001}
+  \field{sortinit}{V}
+  \field{edition}{1}
+  \field{title}{Probability {{Theory}}}
+  \list{location}{1}{%
+    {{Providence}}%
+  }
+  \field{year}{2001}
 \endentry
 
 \lossort

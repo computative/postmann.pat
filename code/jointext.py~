@@ -1,0 +1,8 @@
+from numpy import *
+
+a = loadtxt("/home/marius/Dokumenter/fys4411/postmann.pat/resources/n2w0.010000pos0.txt")
+b = loadtxt("/home/marius/Dokumenter/fys4411/postmann.pat/resources/n2w0.010000pos1.txt")
+c = loadtxt("/home/marius/Dokumenter/fys4411/postmann.pat/resources/n2w0.010000pos2.txt")
+d = loadtxt("/home/marius/Dokumenter/fys4411/postmann.pat/resources/n2w0.010000pos3.txt")
+
+savetxt("/home/marius/Dokumenter/fys4411/postmann.pat/resources/n2w0.010000.txt", concatenate((a,b,c,d), axis=0) )
